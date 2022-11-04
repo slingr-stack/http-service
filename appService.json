@@ -16,19 +16,19 @@
         "allowMultipleInstances": false
     },
     "icon48": "https://storage.googleapis.com/static.slingrs.io/platform/endpoints/http.png",
-    "configurationHelpUrl": "/endpoints_http.html#configuration",
+    "configurationHelpUrl": "/services_http.html#configuration",
     "status": "ACTIVE",
     "stores": [],
     "events": [
         {
             "label": "Webhook",
             "name": "webhook",
-            "description": "Happens when a HTTP request hits the endpoint URL. Must be a POST with content type application/json."
+            "description": "Happens when a HTTP request hits the service URL. Must be a POST with content type application/json."
         },
         {
             "label": "Webhook Sync",
             "name": "webhookSync",
-            "description": "Happens when a HTTP request hits the endpoint URL and needs a response from the listener. Must be a POST with content type application/json."
+            "description": "Happens when a HTTP request hits the service URL and needs a response from the listener. Must be a POST with content type application/json."
         },
         {
             "label": "File Downloaded",
@@ -85,7 +85,7 @@
         {
             "name": "baseUrl",
             "label": "Base URL",
-            "description": "The base URL where this endpoint will send request to. If this is not specified, the complete URL must be included on the path param of each request. ",
+            "description": "The base URL where this service will send request to. If this is not specified, the complete URL must be included on the path param of each request. ",
             "type": "text"
         },
         {
@@ -150,7 +150,7 @@
         {
             "name": "rememberCookies",
             "label": "Remember cookies",
-            "description": "If it is enabled, a basic system to exchange cookies is started: the endpoint sends the last received cookies in subsequents requests. Valid values 'enable', 'disable', and with placeholders ('Custom' option).",
+            "description": "If it is enabled, a basic system to exchange cookies is started: the service sends the last received cookies in subsequents requests. Valid values 'enable', 'disable', and with placeholders ('Custom' option).",
             "type": "buttonsGroup",
             "required": true,
             "defaultValue": "disable",
@@ -171,7 +171,7 @@
         {
             "name": "allowExternalUrl",
             "label": "Allow External URLs",
-            "description": "If it is enabled, the endpoints admits call to paths that starts with 'http://' and 'https://' (using these paths, the baseUrl is ignored). Valid values 'enable', 'disable', and with placeholders ('Custom' option).",
+            "description": "If it is enabled, the services admits call to paths that starts with 'http://' and 'https://' (using these paths, the baseUrl is ignored). Valid values 'enable', 'disable', and with placeholders ('Custom' option).",
             "type": "buttonsGroup",
             "required": true,
             "visibility": "!!config.baseUrl && !!config.baseUrl.trim()",

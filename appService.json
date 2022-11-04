@@ -1,0 +1,261 @@
+{
+    "label": "HTTP",
+    "name": "http",
+    "apiVersion": "v1",
+    "internal": false,
+    "configurationType": "GLOBAL",
+    "deployment": {
+        "profiles":[
+            {
+                "name": "default",
+                "label": "Default",
+                "memory": 256,
+                "description": "Default configuration"
+            }
+        ],
+        "allowMultipleInstances": false
+    },
+    "icon48": "https://storage.googleapis.com/static.slingrs.io/platform/endpoints/http.png",
+    "configurationHelpUrl": "/endpoints_http.html#configuration",
+    "status": "ACTIVE",
+    "stores": [],
+    "events": [
+        {
+            "label": "Webhook",
+            "name": "webhook",
+            "description": "Happens when a HTTP request hits the endpoint URL. Must be a POST with content type application/json."
+        },
+        {
+            "label": "Webhook Sync",
+            "name": "webhookSync",
+            "description": "Happens when a HTTP request hits the endpoint URL and needs a response from the listener. Must be a POST with content type application/json."
+        },
+        {
+            "label": "File Downloaded",
+            "name": "fileDownloaded",
+            "description": "Happens when a async download file process is finished (thrown by a GET function with 'forceDownload' enabled and 'downloadSync' disabled)"
+        }
+    ],
+    "functions": [
+        {
+            "label": "GET",
+            "name": "_get",
+            "description": "Sends a GET request",
+            "callbacks": [
+                {
+                    "name": "fileDownloaded"
+                }
+            ]
+        },
+        {
+            "label": "POST",
+            "name": "_post",
+            "description": "Sends a POST request"
+        },
+        {
+            "label": "PUT",
+            "name": "_put",
+            "description": "Sends a PUT request"
+        },
+        {
+            "label": "PATCH",
+            "name": "_patch",
+            "description": "Sends a PATCH request"
+        },
+        {
+            "label": "DELETE",
+            "name": "_delete",
+            "description": "Sends a DELETE request"
+        },
+        {
+            "label": "HEAD",
+            "name": "_head",
+            "description": "Sends a HEAD request"
+        },
+        {
+            "label": "OPTIONS",
+            "name": "_options",
+            "description": "Sends a OPTIONS request"
+        }
+    ],
+    "scripts":[
+        "functions.js"
+    ],
+    "configuration":[
+        {
+            "name": "baseUrl",
+            "label": "Base URL",
+            "description": "The base URL where this endpoint will send request to. If this is not specified, the complete URL must be included on the path param of each request. ",
+            "type": "text"
+        },
+        {
+            "name": "defaultHeaders",
+            "label": "Default headers",
+            "description": "These headers will be added to all requests. The headers are comma-separated and have the 'key=value' form, per example: key=ABC123,client=456789",
+            "type": "text",
+            "typeOptions": {
+                "validation": {
+                    "function": "!config.defaultHeaders || utils.isPlaceholder(config.defaultHeaders) || config.defaultHeaders.includes(',') || config.defaultHeaders.includes('=')",
+                    "message": "The headers are comma-separated and have the 'key=value' form, per example: key=ABC123,client=456789. The field admits valid placeholders too."
+                }
+            }
+        },
+        {
+            "name": "emptyPath",
+            "label": "Empty path",
+            "description": "Value used when the path in the request is empty",
+            "type": "text"
+        },
+        {
+            "name": "authType",
+            "label": "Authorization",
+            "description": "Select the type of authorization to use on the requests. Valid values 'no', 'basic', 'digest', and with placeholders ('Custom' option).",
+            "type": "buttonsGroup",
+            "required": true,
+            "defaultValue": "no",
+            "typeOptions": {
+                "allowCustom": true,
+                "possibleValues":[
+                    {
+                        "label":"No",
+                        "name":"no"
+                    },
+                    {
+                        "label":"Basic",
+                        "name":"basic"
+                    },
+                    {
+                        "label":"Digest",
+                        "name":"digest"
+                    }
+                ]
+            }
+        },
+        {
+            "name": "username",
+            "label": "Username",
+            "type": "text",
+            "required": true,
+            "visibility": "config.authType && (config.authType == 'basic' || config.authType == 'digest' || utils.isPlaceholder(config.authType))",
+            "description": "Name of the user to access to the external service"
+        },
+        {
+            "name": "password",
+            "label": "Password",
+            "type": "password",
+            "required": true,
+            "visibility": "config.authType && (config.authType == 'basic' || config.authType == 'digest' || utils.isPlaceholder(config.authType))",
+            "description": "Password of the user to access to the external service"
+        },
+        {
+            "name": "rememberCookies",
+            "label": "Remember cookies",
+            "description": "If it is enabled, a basic system to exchange cookies is started: the endpoint sends the last received cookies in subsequents requests. Valid values 'enable', 'disable', and with placeholders ('Custom' option).",
+            "type": "buttonsGroup",
+            "required": true,
+            "defaultValue": "disable",
+            "typeOptions": {
+                "allowCustom": true,
+                "possibleValues":[
+                    {
+                        "label":"Enable",
+                        "name":"enable"
+                    },
+                    {
+                        "label":"Disable",
+                        "name":"disable"
+                    }
+                ]
+            }
+        },
+        {
+            "name": "allowExternalUrl",
+            "label": "Allow External URLs",
+            "description": "If it is enabled, the endpoints admits call to paths that starts with 'http://' and 'https://' (using these paths, the baseUrl is ignored). Valid values 'enable', 'disable', and with placeholders ('Custom' option).",
+            "type": "buttonsGroup",
+            "required": true,
+            "visibility": "!!config.baseUrl && !!config.baseUrl.trim()",
+            "defaultValue": "disable",
+            "typeOptions": {
+                "allowCustom": true,
+                "possibleValues":[
+                    {
+                        "label":"Enable",
+                        "name":"enable"
+                    },
+                    {
+                        "label":"Disable",
+                        "name":"disable"
+                    }
+                ]
+            }
+        },
+        {
+            "name": "connectionTimeout",
+            "label": "Connection timeout",
+            "description": "Connect timeout interval, in milliseconds (0 = infinity). Default value: 5000 ms (5 sec)",
+            "type": "text",
+            "required": true,
+            "defaultValue": "5000",
+            "typeOptions": {
+                "validation": {
+                    "function": "!config.connectionTimeout || utils.isPlaceholder(config.connectionTimeout) || utils.getInteger(config.connectionTimeout) >= 0",
+                    "message": "The time must be a valid placeholder or a positive integer greater than or equal to 0. "
+                }
+            }
+        },
+        {
+            "name": "readTimeout",
+            "label": "Read timeout",
+            "description": "Read timeout interval, in milliseconds (0 = infinity). Default value: 60000 ms (60 sec)",
+            "type": "text",
+            "required": true,
+            "defaultValue": "60000",
+            "typeOptions": {
+                "validation": {
+                    "function": "!config.readTimeout || utils.isPlaceholder(config.readTimeout) || utils.getInteger(config.readTimeout) >= 0",
+                    "message": "The time must be a valid placeholder or a positive integer greater than or equal to 0. "
+                }
+            }
+        },
+        {
+            "name": "followRedirects",
+            "label": "Follow redirects",
+            "description": "Automatic redirection. If it is enabled, the client will automatically redirect to the URI declared in 3xx responses.",
+            "type": "buttonsGroup",
+            "required": true,
+            "defaultValue": "enable",
+            "typeOptions": {
+                "allowCustom": true,
+                "possibleValues":[
+                    {
+                        "label":"Enable",
+                        "name":"enable"
+                    },
+                    {
+                        "label":"Disable",
+                        "name":"disable"
+                    }
+                ]
+            }
+        },
+        {
+            "name": "webhook",
+            "label": "Webhook URL",
+            "type": "label",
+            "value": "@config.WEBHOOK_URL"
+        },
+        {
+            "name": "webhookSync",
+            "label": "Sync Webhook URL",
+            "type": "label",
+            "value": "config.WEBHOOK_URL+'/sync'"
+        },
+        {
+            "name": "config",
+            "label": "Webhooks configuration",
+            "value": "You can pass the above webhook URL to services you want to integrate and you will get the webhook event in your app.",
+            "type": "info"
+        }
+    ]
+}

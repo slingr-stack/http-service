@@ -1,11 +1,11 @@
 /**
  * This flow step will send generic request.
  *
- * @param {text} method, This is used to config external URL.
+ * @param {text} method, This is used to config method.
  * @param {text} baseUrl, This is used to config external URL.
  * @param {text} headers, This is used to config headers.
  * @param {text} body, This is used to send body request.
- * @param {text} callbackData, This is used to send callbackData.
+ * @param {text} callbackData, This is used to send callback data.
  * @param {text} callbacks, This is used to send callbacks.
  */
 step.generic = function (method, baseUrl,headers, body, callbackData, callbacks) {

@@ -64,18 +64,6 @@
 			}
 		},
 		{
-			"name": "Headers",
-			"label": "headers",
-			"description": "These headers will be added to all requests. The headers are comma-separated and have the 'key=value' form, per example: key=ABC123,client=456789",
-			"type": "text",
-			"typeOptions": {
-				"validation": {
-					"function": "!config.headers || utils.isPlaceholder(config.defaultHeaders) || config.headers.includes(',') || config.headers.includes('=')",
-					"message": "The headers are comma-separated and have the 'key=value' form, per example: key=ABC123,client=456789. The field admits valid placeholders too."
-				}
-			}
-		},
-		{
 			"label": "Body",
 			"name": "body",
 			"type": "text",

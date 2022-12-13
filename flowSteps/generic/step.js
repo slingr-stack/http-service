@@ -3,12 +3,11 @@
  *
  * @param {text} method, This is used to config method.
  * @param {text} baseUrl, This is used to config external URL.
- * @param {text} headers, This is used to config headers.
  * @param {text} body, This is used to send body request.
  * @param {text} callbackData, This is used to send callback data.
  * @param {text} callbacks, This is used to send callbacks.
  */
-step.generic = function (method, baseUrl,headers, body, callbackData, callbacks) {
+step.generic = function (method, baseUrl, body, callbackData, callbacks) {
 
 	let options = checkHttpOptions(baseUrl, body);
 
@@ -39,31 +38,3 @@ step.generic = function (method, baseUrl,headers, body, callbackData, callbacks)
 	}
 
 }
-
-var checkHttpOptions = function (url, options) {
-	options = options || {};
-	if (!!url) {
-		if (isObject(url)) {
-			// take the 'url' parameter as the options
-			options = url || {};
-		} else {
-			if (!!options.path || !!options.params || !!options.body) {
-				// options contains the http package format
-				options.path = url;
-			} else {
-				// create html package
-				options = {
-					path: url,
-					body: options
-				}
-			}
-		}
-	}
-	return options;
-};
-
-var isObject = function (obj) {
-	return !!obj && stringType(obj) === '[object Object]'
-};
-
-var stringType = Function.prototype.call.bind(Object.prototype.toString);

@@ -1,6 +1,6 @@
 {
-	"label": "generic",
-	"name": "generic",
+	"label": "HTTP call",
+	"name": "httpCall",
 	"category": "integrations",
 	"description": "This flow step will send generic request",
 	"inputs": [
@@ -13,10 +13,6 @@
 			"required": "true",
 			"options": {
 				"possibleValues": [
-					{
-						"label": "Sum",
-						"name": "SUM"
-					},
 					{
 						"label": "Get",
 						"name": "get"
@@ -97,17 +93,17 @@
 			}
 		},
 		{
-			"label": "Required call back",
+			"label": "Requires callback",
 			"name": "requiredCallBack",
 			"type": "boolean",
-			"description": "If true it will return call back",
+			"description": "If true it will return callback",
 			"defaultValue": false,
 			"options": {
 				"allowContextSelector": "false"
 			}
 		},
 		{
-			"label": "CallbackData",
+			"label": "Callback data",
 			"name": "callbackData",
 			"type": "text",
 			"description": "This is used to set callback data",

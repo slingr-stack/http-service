@@ -7,12 +7,16 @@
 		{
 			"label": "Method",
 			"name": "method",
-			"type": "dropDown",
+			"type": "choice",
 			"description": "Select method",
 			"defaultValue": "get",
 			"required": "true",
 			"options": {
 				"possibleValues": [
+					{
+						"label": "Sum",
+						"name": "SUM"
+					},
 					{
 						"label": "Get",
 						"name": "get"
@@ -59,6 +63,24 @@
 			"description": "The base URL where this endpoint will send request to. Add path variables in Url if required",
 			"type": "text",
 			"required": "true",
+			"options": {
+				"allowContextSelector": "false"
+			}
+		},
+		{
+			"name": "Headers",
+			"label": "headers",
+			"description": "The headers are JSON format, per example: {\"key\"=\"ABC123\",\"client\"=\"456789\".",
+			"type": "text",
+			"options": {
+				"allowContextSelector": "false"
+			}
+		},
+		{
+			"name": "Params",
+			"label": "params",
+			"description": "The params are JSON format, per example: {\"key\"=\"ABC123\",\"client\"=\"456789\".",
+			"type": "text",
 			"options": {
 				"allowContextSelector": "false"
 			}

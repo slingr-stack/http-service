@@ -78,7 +78,7 @@
         }
     ],
     "flowSteps":  [
-        "generic"
+        "httpCall"
     ],
     "configuration":[
         {

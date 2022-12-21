@@ -7,10 +7,12 @@
 		{
 			"label": "Method",
 			"name": "method",
-			"type": "choice",
+			"type": "dropDown",
 			"description": "Select method",
-			"defaultValue": "get",
-			"required": "true",
+			"multiplicity": "one",
+			"defaultValue": [
+				"get"
+			],
 			"options": {
 				"possibleValues": [
 					{
@@ -66,8 +68,9 @@
 		{
 			"name": "Headers",
 			"label": "headers",
-			"description": "The headers are JSON format, per example: {\"key\"=\"ABC123\",\"client\"=\"456789\".",
+			"description": "The headers have the 'key=value' form, per example: key=ABC123",
 			"type": "text",
+			"multiplicity": "many",
 			"options": {
 				"allowContextSelector": "false"
 			}
@@ -75,8 +78,9 @@
 		{
 			"name": "Params",
 			"label": "params",
-			"description": "The params are JSON format, per example: {\"key\"=\"ABC123\",\"client\"=\"456789\".",
+			"description": "The params have the 'key=value' form, per example: key=ABC123",
 			"type": "text",
+			"multiplicity": "many",
 			"options": {
 				"allowContextSelector": "false"
 			}
@@ -84,7 +88,7 @@
 		{
 			"label": "Body",
 			"name": "body",
-			"type": "text",
+			"type": "json",
 			"required": "['post', 'put', 'patch'].includes(config.method)",
 			"visibility": "['post', 'put', 'patch'].includes(config.method)",
 			"description": "This is used to set body request",
@@ -127,7 +131,7 @@
 		{
 			"label": "Response",
 			"name": "response",
-			"type": "text",
+			"type": "object",
 			"description": "The response to external URL"
 		}
 	]

@@ -11,7 +11,7 @@
  */
 step.httpCall = function (method, path, headers, params, body, callbackData, callbacks) {
 
-	sys.logs.debug('[http-service] path from: ' + path);
+	sys.logs.debug('[http-service] path from: ' + body);
 
 	body = body ? JSON.parse(body) : null
 	headers = headers ? JSON.parse(headers) : null

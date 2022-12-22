@@ -175,7 +175,6 @@
 			"name": "connectionTimeout",
 			"description": "Connect timeout interval, in milliseconds (0 = infinity). Default value: 5000 ms (5 sec)",
 			"type": "text",
-			"required": true,
 			"defaultValue": "5000",
 			"visibility": "config.settings",
 			"typeOptions": {
@@ -190,7 +189,6 @@
 			"name": "readTimeout",
 			"description": "Read timeout interval, in milliseconds (0 = infinity). Default value: 60000 ms (60 sec)",
 			"type": "text",
-			"required": true,
 			"defaultValue": "60000",
 			"visibility": "config.settings",
 			"typeOptions": {

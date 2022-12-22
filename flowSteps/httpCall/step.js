@@ -15,7 +15,7 @@
  * @param {number} readTimeout, Connect timeout interval, in milliseconds.
  */
 step.httpCall = function (method, url, headers, params, body, requiresCallBack,
-						  callbackData, callbacks,followRedirects,
+						  callbackData, callbacks, settings, followRedirects,
 						  download, fullResponse,connectionTimeout, readTimeout) {
 
 	headers = isObject(headers) ? headers : stringToObject(headers)

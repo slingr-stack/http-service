@@ -129,6 +129,7 @@
 		},
 		{
 			"label": "Settings",
+			"name": "settings",
 			"type": "label"
 		},
 		{

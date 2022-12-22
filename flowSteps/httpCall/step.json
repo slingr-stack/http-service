@@ -173,6 +173,9 @@
 					"function": "!config.connectionTimeout || utils.isPlaceholder(config.connectionTimeout) || utils.getInteger(config.connectionTimeout) >= 0",
 					"message": "The time must be a valid placeholder or a positive integer greater than or equal to 0. "
 				}
+			},
+			"options": {
+				"allowContextSelector": "false"
 			}
 		},
 		{
@@ -186,6 +189,9 @@
 					"function": "!config.readTimeout || utils.isPlaceholder(config.readTimeout) || utils.getInteger(config.readTimeout) >= 0",
 					"message": "The time must be a valid placeholder or a positive integer greater than or equal to 0. "
 				}
+			},
+			"options": {
+				"allowContextSelector": "false"
 			}
 		}
 	],

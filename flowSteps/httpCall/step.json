@@ -56,8 +56,8 @@
 			}
 		},
 		{
-			"name": "baseUrl",
-			"label": "Base URL",
+			"label": "URL",
+			"name": "url",
 			"description": "The base URL where this endpoint will send request to. Add path variables in Url if required",
 			"type": "text",
 			"required": "true",
@@ -66,8 +66,8 @@
 			}
 		},
 		{
-			"name": "Headers",
-			"label": "headers",
+			"label": "Headers",
+			"name": "headers",
 			"description": "The headers have the 'key=value' form, per example: key=ABC123",
 			"type": "text",
 			"multiplicity": "many",
@@ -76,8 +76,8 @@
 			}
 		},
 		{
-			"name": "Params",
-			"label": "params",
+			"label": "Params",
+			"name": "params",
 			"description": "The params have the 'key=value' form, per example: key=ABC123",
 			"type": "text",
 			"multiplicity": "many",
@@ -98,7 +98,7 @@
 		},
 		{
 			"label": "Requires callback",
-			"name": "requiredCallBack",
+			"name": "requiresCallBack",
 			"type": "boolean",
 			"description": "If true it will return callback",
 			"defaultValue": false,
@@ -111,7 +111,7 @@
 			"name": "callbackData",
 			"type": "text",
 			"description": "This is used to set callback data",
-			"visibility": "config.requiredCallBack",
+			"visibility": "config.requiresCallBack",
 			"options": {
 				"allowContextSelector": "false"
 			}
@@ -120,8 +120,52 @@
 			"label": "Callbacks",
 			"name": "callbacks",
 			"type": "text",
+			"multiplicity": "many",
 			"description": "This is used to set callbacks",
-			"visibility": "config.requiredCallBack",
+			"visibility": "config.requiresCallBack",
+			"options": {
+				"allowContextSelector": "false"
+			}
+		},
+		{
+			"label": "Settings",
+			"name": "settings",
+			"type": "boolean",
+			"description": "Set the settings",
+			"defaultValue": false,
+			"options": {
+				"allowContextSelector": "false"
+			}
+		},
+		{
+			"label": "Follow Redirects",
+			"name": "followRedirects",
+			"type": "boolean",
+			"description": "Set follow redirects",
+			"visibility": "config.settings",
+			"defaultValue": false,
+			"options": {
+				"allowContextSelector": "false"
+			}
+		},
+		{
+			"label": "Download",
+			"name": "download",
+			"type": "boolean",
+			"description": "Set download",
+			"visibility": "config.settings",
+			"defaultValue": false,
+			"options": {
+				"allowContextSelector": "false"
+			}
+		},
+		{
+			"label": "Full Response",
+			"name": "fullResponse",
+			"type": "boolean",
+			"description": "Set full response",
+			"visibility": "config.settings",
+			"defaultValue": false,
 			"options": {
 				"allowContextSelector": "false"
 			}

@@ -2,24 +2,33 @@
  * This flow step will send generic request.
  *
  * @param {text} method, This is used to config method.
- * @param {text} path, This is used to config external URL.
- * @param {string} headers, This is used to config external URL.
- * @param {string} params, This is used to config external URL.
- * @param {string} body, This is used to send body request.
+ * @param {text} url, This is used to config external URL.
+ * @param {Array[string]} headers, This is used to config headers.
+ * @param {Array[string]} params, This is used to config params.
+ * @param {json} body, This is used to send body request.
  * @param {text} callbackData, This is used to send callback data.
  * @param {text} callbacks, This is used to send callbacks.
+ * @param {boolean} followRedirects, This is used to config follow redirects.
+ * @param {boolean} download, This is used to config download.
+ * @param {boolean} fullResponse, This is used to config full response.
  */
-step.httpCall = function (method, path, headers, params, body, callbackData, callbacks) {
+step.httpCall = function (method, url, headers, params, body, requiresCallBack,
+						  callbackData, callbacks,settings ,followRedirects, download, fullResponse) {
 
 	headers = isObject(headers) ? headers : stringToObject(headers)
 	params = isObject(params) ? params : stringToObject(params)
 	body = isObject(body) ? body : JSON.parse(body);
 
 	var options = {
-		path: path,
+		url: url,
 		params:params,
 		headers:headers,
-		body: body
+		body: body,
+		settings : {
+			followRedirects : followRedirects,
+			download : download,
+			fullResponse : fullResponse
+		}
 	}
 
     switch (method) {

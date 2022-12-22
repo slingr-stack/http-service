@@ -11,9 +11,12 @@
  * @param {boolean} followRedirects, This is used to config follow redirects.
  * @param {boolean} download, This is used to config download.
  * @param {boolean} fullResponse, This is used to config full response.
+ * @param {number} connectionTimeout, Read timeout interval, in milliseconds.
+ * @param {number} readTimeout, Connect timeout interval, in milliseconds.
  */
 step.httpCall = function (method, url, headers, params, body, requiresCallBack,
-						  callbackData, callbacks,settings ,followRedirects, download, fullResponse) {
+						  callbackData, callbacks,settings ,followRedirects,
+						  download, fullResponse,connectionTimeout, readTimeout) {
 
 	headers = isObject(headers) ? headers : stringToObject(headers)
 	params = isObject(params) ? params : stringToObject(params)
@@ -27,7 +30,9 @@ step.httpCall = function (method, url, headers, params, body, requiresCallBack,
 		settings : {
 			followRedirects : followRedirects,
 			download : download,
-			fullResponse : fullResponse
+			fullResponse : fullResponse,
+			connectionTimeout:connectionTimeout,
+			readTimeout:readTimeout
 		}
 	}
 

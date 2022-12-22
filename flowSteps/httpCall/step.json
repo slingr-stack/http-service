@@ -141,7 +141,7 @@
 			"label": "Follow Redirects",
 			"name": "followRedirects",
 			"type": "boolean",
-			"description": "Set follow redirects",
+			"description": "Follow the redirects when a HTTP request is executed",
 			"visibility": "config.settings",
 			"defaultValue": false,
 			"options": {
@@ -152,7 +152,7 @@
 			"label": "Download",
 			"name": "download",
 			"type": "boolean",
-			"description": "Set download",
+			"description": "Determines if the HTTP resource will be downloaded",
 			"visibility": "config.settings",
 			"defaultValue": false,
 			"options": {
@@ -163,11 +163,41 @@
 			"label": "Full Response",
 			"name": "fullResponse",
 			"type": "boolean",
-			"description": "Set full response",
+			"description": "Include extended information about response",
 			"visibility": "config.settings",
 			"defaultValue": false,
 			"options": {
 				"allowContextSelector": "false"
+			}
+		},
+		{
+			"label": "Connection timeout",
+			"name": "connectionTimeout",
+			"description": "Connect timeout interval, in milliseconds (0 = infinity). Default value: 5000 ms (5 sec)",
+			"type": "text",
+			"required": true,
+			"defaultValue": "5000",
+			"visibility": "config.settings",
+			"typeOptions": {
+				"validation": {
+					"function": "!config.connectionTimeout || utils.isPlaceholder(config.connectionTimeout) || utils.getInteger(config.connectionTimeout) >= 0",
+					"message": "The time must be a valid placeholder or a positive integer greater than or equal to 0. "
+				}
+			}
+		},
+		{
+			"label": "Read timeout",
+			"name": "readTimeout",
+			"description": "Read timeout interval, in milliseconds (0 = infinity). Default value: 60000 ms (60 sec)",
+			"type": "text",
+			"required": true,
+			"defaultValue": "60000",
+			"visibility": "config.settings",
+			"typeOptions": {
+				"validation": {
+					"function": "!config.readTimeout || utils.isPlaceholder(config.readTimeout) || utils.getInteger(config.readTimeout) >= 0",
+					"message": "The time must be a valid placeholder or a positive integer greater than or equal to 0. "
+				}
 			}
 		}
 	],

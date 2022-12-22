@@ -109,8 +109,9 @@
 		{
 			"label": "Callback data",
 			"name": "callbackData",
-			"type": "text",
+			"type": "json",
 			"description": "This is used to set callback data",
+			"required": "config.requiresCallBack",
 			"visibility": "config.requiresCallBack",
 			"options": {
 				"allowContextSelector": "false"
@@ -119,12 +120,13 @@
 		{
 			"label": "Callbacks",
 			"name": "callbacks",
-			"type": "text",
-			"multiplicity": "many",
-			"description": "This is used to set callbacks",
+			"type": "script",
+			"description": "This is a map where you can listener for different callbacks",
+			"required": "config.requiresCallBack",
 			"visibility": "config.requiresCallBack",
 			"options": {
-				"allowContextSelector": "false"
+				"allowContextSelector": "false",
+				"parameters": ["event","data"]
 			}
 		},
 		{
@@ -142,6 +144,7 @@
 			"name": "followRedirects",
 			"type": "boolean",
 			"description": "Set follow redirects",
+			"required": "config.settings",
 			"visibility": "config.settings",
 			"defaultValue": false,
 			"options": {
@@ -153,6 +156,7 @@
 			"name": "download",
 			"type": "boolean",
 			"description": "Set download",
+			"required": "config.settings",
 			"visibility": "config.settings",
 			"defaultValue": false,
 			"options": {
@@ -164,6 +168,7 @@
 			"name": "fullResponse",
 			"type": "boolean",
 			"description": "Set full response",
+			"required": "config.settings",
 			"visibility": "config.settings",
 			"defaultValue": false,
 			"options": {

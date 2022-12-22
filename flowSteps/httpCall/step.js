@@ -11,8 +11,6 @@
  */
 step.httpCall = function (method, path, headers, params, body, callbackData, callbacks) {
 
-	sys.logs.debug('[http-service] path from: ' + path);
-
 	headers = isObject(headers) ? headers : stringToObject(headers)
 	params = isObject(params) ? params : stringToObject(params)
 	body = isObject(body) ? body : JSON.parse(body);
@@ -59,10 +57,10 @@ var stringToObject = function (obj) {
 	if (!!obj){
 		var keyValue = obj.toString().split(',');
 		var parseObj = {};
-		for(const property in keyValue) {
-			parseObj[keyValue[property].split('=')[0]] = keyValue[property].split('=')[1]
+		for(var i = 0; i < keyValue.length; i++) {
+			parseObj[keyValue[i].split('=')[0]] = keyValue[i].split('=')[1]
 		}
 		return parseObj;
 	}
 	return null;
-}
+};

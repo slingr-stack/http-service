@@ -110,7 +110,7 @@
 			"label": "Callback data",
 			"name": "callbackData",
 			"type": "json",
-			"description": "This is used to set callback data",
+			"description": "This is an object you can send that you will get back when the callback is processed",
 			"required": "config.requiresCallBack",
 			"visibility": "config.requiresCallBack",
 			"options": {

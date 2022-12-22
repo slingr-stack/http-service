@@ -18,6 +18,7 @@ step.httpCall = function (method, url, headers, params, body, requiresCallBack,
 	headers = isObject(headers) ? headers : stringToObject(headers)
 	params = isObject(params) ? params : stringToObject(params)
 	body = isObject(body) ? body : JSON.parse(body);
+	callbackData = isObject(callbackData) ? body : JSON.parse(callbackData);
 
 	var options = {
 		url: url,

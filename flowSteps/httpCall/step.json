@@ -129,13 +129,7 @@
 		},
 		{
 			"label": "Settings",
-			"name": "settings",
-			"type": "boolean",
-			"description": "Set the settings",
-			"defaultValue": false,
-			"options": {
-				"allowContextSelector": "false"
-			}
+			"type": "label"
 		},
 		{
 			"label": "Follow Redirects",

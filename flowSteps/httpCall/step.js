@@ -5,8 +5,8 @@
  * @param {text} url, This is used to config external URL.
  * @param {Array[string]} headers, This is used to config headers.
  * @param {Array[string]} params, This is used to config params.
- * @param {json} body, This is used to send body request.
- * @param {text} callbackData, This is used to send callback data.
+ * @param {string} body, This is used to send body request.
+ * @param {string} callbackData, This is used to send callback data.
  * @param {text} callbacks, This is used to send callbacks.
  * @param {boolean} followRedirects, This is used to config follow redirects.
  * @param {boolean} download, This is used to config download.

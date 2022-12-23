@@ -77,9 +77,6 @@
             "description": "Sends a OPTIONS request"
         }
     ],
-    "flowSteps":  [
-        "httpCall"
-    ],
     "configuration":[
         {
             "name": "baseUrl",

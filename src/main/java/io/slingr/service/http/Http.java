@@ -23,6 +23,7 @@ import org.slf4j.LoggerFactory;
  */
 @SlingrService(name = "http", functionPrefix = "_")
 public class Http extends HttpSvc {
+
     private static final Logger logger = LoggerFactory.getLogger(Http.class);
 
     @ApplicationLogger
@@ -45,46 +46,35 @@ public class Http extends HttpSvc {
         try {
             final Json jHeaders = checkHeaders(headers);
             jHeaders.forEachMapString(httpService()::setupDefaultHeader);
-        } catch (Exception ex){
+        } catch (Exception ex) {
             appLogs.error(String.format("Invalid default headers defined for HTTP service. Please check them [%s]", headers));
         }
-
         httpService().setDefaultEmptyPath(configuration.string("emptyPath", ""));
-
         httpService().setRememberCookies(Configuration.parseBooleanValue(configuration.string("rememberCookies"), false));
-
-        if(StringUtils.isBlank(baseUrl)){
+        if (StringUtils.isBlank(baseUrl)) {
             httpService().setAllowExternalUrl(true);
         } else {
             httpService().setAllowExternalUrl(Configuration.parseBooleanValue(configuration.string("allowExternalUrl"), false));
         }
-
         httpService().setFollowRedirects(Configuration.parseBooleanValue(configuration.string("followRedirects"), true));
         httpService().setConnectionTimeout(configuration.integer("connectionTimeout", 5000));
         httpService().setReadTimeout(configuration.integer("readTimeout", 60000));
-
         final String authType = configuration.string("authType", "");
-
-        if(StringUtils.isNotBlank(authType)) {
+        if (StringUtils.isNotBlank(authType)) {
             final String username = configuration.string("username", "");
             final String password = configuration.string("password", "");
-
             if ("basic".equalsIgnoreCase(authType)) {
                 httpService().setupBasicAuthentication(username, password);
-
                 logger.info(String.format("Configured HTTP Basic authentication: username [%s] - password [%s]", username, Strings.maskToken(password)));
             } else if ("digest".equalsIgnoreCase(authType)) {
                 httpService().setupDigestAuthentication(username, password);
-
                 logger.info(String.format("Configured HTTP Digest authentication: username [%s] - password [%s]", username, Strings.maskToken(password)));
             } else {
                 logger.info("Configured without HTTP authentication");
             }
         }
-
         logger.info(String.format("Configured HTTP service: baseUrl [%s]", baseUrl));
     }
-
 
     /**
      * Converts the string headers representation in a Json map object
@@ -95,7 +85,7 @@ public class Http extends HttpSvc {
     private static Json checkHeaders(String stringHeaders) {
         final Json headers = Json.map();
         try {
-            if (StringUtils.isNotBlank(stringHeaders)){
+            if (StringUtils.isNotBlank(stringHeaders)) {
                 final String[] pairs = StringUtils.split(stringHeaders, ",");
                 for (String pair : pairs) {
                     final String[] keyValue = StringUtils.split(pair, "=");

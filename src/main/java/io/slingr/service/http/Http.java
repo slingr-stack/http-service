@@ -1,16 +1,16 @@
 package io.slingr.service.http;
 
 
-import io.slingr.svcs.HttpSvc;
-import io.slingr.svcs.configurations.Configuration;
-import io.slingr.svcs.exceptions.ErrorCode;
-import io.slingr.svcs.exceptions.SvcException;
-import io.slingr.svcs.framework.annotations.*;
-import io.slingr.svcs.services.AppLogs;
-import io.slingr.svcs.utils.Json;
-import io.slingr.svcs.utils.Strings;
-import io.slingr.svcs.ws.exchange.WebServiceRequest;
-import io.slingr.svcs.ws.exchange.WebServiceResponse;
+import io.slingr.services.HttpService;
+import io.slingr.services.configurations.Configuration;
+import io.slingr.services.exceptions.ErrorCode;
+import io.slingr.services.exceptions.ServiceException;
+import io.slingr.services.framework.annotations.*;
+import io.slingr.services.services.AppLogs;
+import io.slingr.services.utils.Json;
+import io.slingr.services.utils.Strings;
+import io.slingr.services.ws.exchange.WebServiceRequest;
+import io.slingr.services.ws.exchange.WebServiceResponse;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.entity.ContentType;
 import org.slf4j.Logger;
@@ -22,7 +22,7 @@ import org.slf4j.LoggerFactory;
  * <p>Created by dgaviola on 08/22/15.
  */
 @SlingrService(name = "http", functionPrefix = "_")
-public class Http extends HttpSvc {
+public class Http extends HttpService {
 
     private static final Logger logger = LoggerFactory.getLogger(Http.class);
 
@@ -41,7 +41,7 @@ public class Http extends HttpSvc {
     }
 
     @Override
-    public void svcStarted() {
+    public void serviceStarted() {
         final String headers = configuration.string("defaultHeaders", "");
         try {
             final Json jHeaders = checkHeaders(headers);
@@ -94,7 +94,7 @@ public class Http extends HttpSvc {
                 }
             }
         } catch (Exception e) {
-            throw SvcException.permanent(ErrorCode.ARGUMENT, String.format("Default headers [%s] are invalid", stringHeaders));
+            throw ServiceException.permanent(ErrorCode.ARGUMENT, String.format("Default headers [%s] are invalid", stringHeaders));
         }
         return headers;
     }

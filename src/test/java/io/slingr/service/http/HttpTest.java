@@ -1,9 +1,9 @@
 package io.slingr.service.http;
 
 
-import io.slingr.svcs.services.exchange.Parameter;
-import io.slingr.svcs.utils.Json;
-import io.slingr.svcs.utils.tests.SvcTests;
+import io.slingr.services.services.exchange.Parameter;
+import io.slingr.services.utils.Json;
+import io.slingr.services.utils.tests.ServiceTests;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -22,11 +22,11 @@ public class HttpTest {
 
     private static final Logger logger = LoggerFactory.getLogger(HttpTest.class);
 
-    private static SvcTests test;
+    private static ServiceTests test;
 
     @BeforeClass
     public static void init() throws Exception {
-        test = SvcTests.start(new io.slingr.service.http.Runner(), "test.properties");
+        test = ServiceTests.start(new io.slingr.service.http.Runner(), "test.properties");
     }
 
     @Test

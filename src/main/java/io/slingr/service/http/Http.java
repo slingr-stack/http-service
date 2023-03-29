@@ -21,7 +21,7 @@ import org.slf4j.LoggerFactory;
  *
  * <p>Created by dgaviola on 08/22/15.
  */
-@SlingrService(name = "http", functionPrefix = "_")
+@SlingrService(name = "http")
 public class Http extends HttpService {
 
     private static final Logger logger = LoggerFactory.getLogger(Http.class);

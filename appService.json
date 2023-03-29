@@ -38,7 +38,7 @@
     "functions": [
         {
             "label": "GET",
-            "name": "_get",
+            "name": "get",
             "description": "Sends a GET request",
             "callbacks": [
                 {
@@ -48,32 +48,32 @@
         },
         {
             "label": "POST",
-            "name": "_post",
+            "name": "post",
             "description": "Sends a POST request"
         },
         {
             "label": "PUT",
-            "name": "_put",
+            "name": "put",
             "description": "Sends a PUT request"
         },
         {
             "label": "PATCH",
-            "name": "_patch",
+            "name": "patch",
             "description": "Sends a PATCH request"
         },
         {
             "label": "DELETE",
-            "name": "_delete",
+            "name": "delete",
             "description": "Sends a DELETE request"
         },
         {
             "label": "HEAD",
-            "name": "_head",
+            "name": "head",
             "description": "Sends a HEAD request"
         },
         {
             "label": "OPTIONS",
-            "name": "_options",
+            "name": "options",
             "description": "Sends a OPTIONS request"
         }
     ],

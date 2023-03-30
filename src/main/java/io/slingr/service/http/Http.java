@@ -43,7 +43,6 @@ public class Http extends HttpService {
     @Override
     public void serviceStarted() {
         final String headers = configuration.string("defaultHeaders", "");
-        appLogs.error(String.format("Http started", headers));
         try {
             final Json jHeaders = checkHeaders(headers);
             jHeaders.forEachMapString(httpService()::setupDefaultHeader);

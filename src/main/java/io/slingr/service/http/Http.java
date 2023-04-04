@@ -16,6 +16,8 @@ import org.apache.http.entity.ContentType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static io.slingr.services.services.HttpService.defaultWebhookConverter;
+
 /**
  * <p>HTTP serice
  *
@@ -98,12 +100,23 @@ public class Http extends HttpService {
         }
         return headers;
     }
-
-    @ServiceWebService(path = "/sync")
-    public WebServiceResponse optionsLoad(WebServiceRequest request) {
+    @ServiceWebService(path = "/{externalService}")
+    public WebServiceResponse asyncWebhook(WebServiceRequest request) {
         try {
             Json body = request.getJsonBody();
-            Json options = (Json) events().sendSync("webhookSync", body);
+            events().send("webhook",  defaultWebhookConverter(request));
+            return new WebServiceResponse("ok");
+        } catch (ClassCastException cce) {
+            appLogs.error("The response to the webhook from the listener is not a valid JSON");
+        } catch (Exception e) {
+            appLogs.error("There was an error processing webhook: " + e.getMessage(), e);
+        }
+        return new WebServiceResponse(Json.map(), ContentType.APPLICATION_JSON.toString());
+    }
+    @ServiceWebService(path = "{externalService}/sync")
+    public WebServiceResponse optionsLoad(WebServiceRequest request) {
+        try {
+            Json options = (Json) events().sendSync("webhookSync", defaultWebhookConverter(request));
             return new WebServiceResponse(options, ContentType.APPLICATION_JSON.toString());
         } catch (ClassCastException cce) {
             appLogs.error("The response to the sync webhook from the listener is not a valid JSON");

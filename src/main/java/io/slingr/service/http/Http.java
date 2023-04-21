@@ -18,11 +18,6 @@ import org.slf4j.LoggerFactory;
 
 import static io.slingr.services.services.HttpService.defaultWebhookConverter;
 
-/**
- * <p>HTTP serice
- *
- * <p>Created by dgaviola on 08/22/15.
- */
 @SlingrService(name = "http")
 public class Http extends HttpService {
 

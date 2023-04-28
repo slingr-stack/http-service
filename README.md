@@ -1,37 +1,40 @@
 ---
-title: HTTP endpoint
+title: HTTP Service
 keywords: 
-last_updated: April 20, 2017
+last_updated: April 21, 2023
 tags: []
-summary: "Detailed description of the API of the HTTP endpoint."
+summary: "Detailed description of the API of the HTTP Service."
 ---
 
 ## Overview
 
-The HTTP endpoint allows to make HTTP requests as well as receive HTTP request from
+The HTTP service allows to make HTTP requests as well as receive HTTP request from
 other servers. This is the list of features:
 
 - Send HTTP requests (`GET`, `PUT`, `POST`, etc.) to other servers
 - Receive external HTTP requests (`GET`, `PUT`, `POST`, etc.)
 - Download files
 - Support for basic and digest authentication
-- Support for cookies
+- Support for Cookies, Headers and Query parameters
+- Support for JSON and XML content types
+- Support for redirects
+- Support for SSL
 
-In many cases you can use the HTTP endpoint to call external services where an official
-endpoint does not exist. This will work as long as they provide a REST HTTP API.
+In many cases you can use the HTTP service to call external services where an official
+service does not exist. This will work as long as they provide a REST HTTP API.
 
 ## Configuration
 
 ### Base URL
 
-If all the request you will be doing through this endpoint have a common root URL, you can
+If all the request you will be doing through this service have a common root URL, you can
 put it here to avoid having to pass it on every request.
 
 You can also leave this empty and provide the full URL on each request.
 
 ### Default headers
 
-Allows to define headers that will be added to all requests done through this endpoint. The
+Allows to define headers that will be added to all requests done through this service. The
 format is `key=value` and you can specify several headers separated by commas:
 
 ```
@@ -40,7 +43,7 @@ Content-Type=application/json,Accept=application/json
 
 ### Empty path
 
-If the path is empty when a request is done through the endpoint, this is the default path
+If the path is empty when a request is done through the service, this is the default path
 that will be used. You can leave this empty if you don't want any default path.
 
 ### Authorization
@@ -67,33 +70,38 @@ Password to access the external service. Needed when using `Basic authorization`
 ### Remember cookies
 
 Enable this flag if you want to use a basic system to exchange cookies with the external 
-service, where the endpoint will send the last received cookies in subsequent requests.
+service, where the service will send the last received cookies in subsequent requests.
+
+### Allow External URLs
+
+Disable this flag if you want to restrict the service to only allow requests with the same domain as the service. 
+This is useful to avoid external requests to other services. This will ignore the `Base URL` configuration.
 
 ### Connection timeout
 
-This is the maximum time the endpoint waits to perform the connection to an external 
+This is the maximum time the service waits to perform the connection to an external 
 service. If it times out, an exception is thrown and the request cancelled. 
 Default value: 5000 ms (5 sec). Set to zero for to wait indefinitely. 
 
 ### Read timeout
 
-This is the maximum time the endpoint waits to receive the response to a request to 
+This is the maximum time the service waits to receive the response to a request to 
 an external service. If it times out, an exception is thrown and the request 
 cancelled. Default value: 60000 ms (60 sec). Set to zero to wait indefinitely.
 
 ### Follow redirects
 
-If it is enabled, the endpoint will automatically redirect when it receives a 
+If it is enabled, the service will automatically redirect when it receives a 
 `3xx` HTTP status code as response to a request.
 
 ### Webhook URL
 
-This is the URL the endpoint will be listening for requests, which will be sent as events
+This is the URL the service will be listening for requests, which will be sent as events
 to the app.
 
 ### Sync Webhook URL
 
-This is the URL the endpoint will be listening for requests, which will be sent as events
+This is the URL the service will be listening for requests, which will be sent as events
 to the app.
 
 The difference with the webhooks above is that in this case the listener should return a
@@ -104,7 +112,7 @@ JSON object that will be return to the caller.
 You can make a simple `GET` request like this:
 
 ```js
-var res = app.endpoints.http.get({
+var res = app.svc.http.get({
   path: '/orders',
   params: {
     type: 'a'
@@ -121,7 +129,7 @@ res.items.forEach(function(item) {
 Also a `POST` request can send information like this:
 
 ```js
-var res = app.endpoints.http.post({
+var res = app.svc.http.post({
   path: '/companies',
   headers: {
     token: token
@@ -137,7 +145,7 @@ If the response code is not `2XX` you can catch the exception:
 
 ```js
 try {
-  app.endpoints.http.post(msg);
+  app.svc.http.post(msg);
 } catch (e) {
   log('status code: '+e.additionalInfo.status);
   log('headers: '+JSON.stringify(e.additionalInfo.headers));
@@ -155,7 +163,7 @@ sys.logs.info('request body: ' + JSON.stringify(event.data.body));
 
 ## Content format
 
-The endpoint has some special handling for `JSON` and `XML` content types which are explained
+The service has some special handling for `JSON` and `XML` content types which are explained
 below in detail. For other content types it will just try to convert the content to a plain
 string and will be responsibility of the developer to handle it.
 
@@ -164,18 +172,18 @@ If you are working with binary data you probably need to download it. Check the 
 
 ### JSON
 
-If the content type is `application/json` the endpoint will automatically convert the content
+If the content type is `application/json` the service will automatically convert the content
 from and to JSON. For example when you make a `GET` request like this:
 
 ```js
-var res = app.endpoints.get('/companies/'+companyId);
+var res = app.svc.get('/companies/'+companyId);
 log('company name: '+res.name);
 ```
 
 If the response is an array, it will be converted to an array:
 
 ```js
-var res = app.endpoints.get('/repositories');
+var res = app.svc.get('/repositories');
 res.forEach(function(repo) {
   log('repo: '+repo.name);
 });
@@ -184,7 +192,7 @@ res.forEach(function(repo) {
 Same when you send data through `POST` or `PUT` requests:
 
 ```js
-var res = app.endpoints.http.post({
+var res = app.svc.http.post({
   path: '/companies',
   headers: {
     token: token
@@ -205,7 +213,7 @@ log('name: '+event.data.body.name);
 
 ### XML
 
-If the content type is `application/json` the endpoint will automatically convert the content
+If the content type is `application/json` the service will automatically convert the content
 from and to a Javascript object using [JXON](https://developer.mozilla.org/en-US/docs/JXON): 
 
 For example if an external service responds with the following XML:
@@ -238,7 +246,7 @@ var msg = {
   },
   body: request
 };
-var response = app.endpoints.http.post(msg);
+var response = app.svc.http.post(msg);
 ```
 
 The body sent to the external service will be converted to this XML:
@@ -257,22 +265,22 @@ Here are some considerations when converting from/to XML:
 All methods in the Javascript API allow the following options:
 
 - `path`: the URL you will send the request. Keep in mind that if you configured a `Base URL` in
-  the endpoint this path will be appended to the URL.
+  the service this path will be appended to the URL.
 - `params`: an object with query parameters for the request (they go in the query string part of 
   the request).
 - `headers`: an object with headers to send in the request. If you provide headers these will 
-  override the ones defined in the endpoint's configuration.
+  override the ones defined in the service's configuration.
 - `body`: this is the body of the request. If you are using JSON, you can directly send an object
   or array and it will be automatically converted to a JSON string. If you are using XML content
   type, this will be converted based on the rules defined [above](#xml).
 - `fullResponse`: controls what will be set in the response. If `true` the response when calling
   an HTTP method will be an object with fields `status`, `headers` and `body`. This is important 
   if you need to check status or headers in the response.
-- `connectionTimeout`: overwrites the [`Connection timeout`](#connection-timeout) configuration set on the endpoint only 
+- `connectionTimeout`: overwrites the [`Connection timeout`](#connection-timeout) configuration set on the service only 
 for the request. 
-- `readTimeout`: overwrites the [`Read timeout`](#read-timeout) configuration set on the endpoint only for the 
+- `readTimeout`: overwrites the [`Read timeout`](#read-timeout) configuration set on the service only for the 
 request.
-- `followRedirects`: overwrites the [`Follow redirects`](#follow-redirects) configuration set on the endpoint only for 
+- `followRedirects`: overwrites the [`Follow redirects`](#follow-redirects) configuration set on the service only for 
 the request. 
 
 Check each method to see how to pass these options.
@@ -282,7 +290,7 @@ Check each method to see how to pass these options.
 You can make `GET` requests like this:
 
 ```js
-var res = app.endpoints.http.get({
+var res = app.svc.http.get({
   path: '/data/companies',
   params: {
     type: 'a'
@@ -299,7 +307,7 @@ log(JSON.stringify(res)); // this will print the body of the response
 If you need to get information of the headers you can send the `fullResponse` flag in `true`:
 
 ```js
-var res = app.endpoints.http.get({
+var res = app.svc.http.get({
   path: '/data/companies',
   params: {
     type: 'a'
@@ -321,14 +329,14 @@ Keep in mind that headers keys will be all lower case.
 You can also use a shortcut:
 
 ```js
-var res = app.endpoints.http.get('/data/companies');
+var res = app.svc.http.get('/data/companies');
 ```
 
-If you want to overwrite some of the connection values set on the endpoint configuration for only the request, use the 
+If you want to overwrite some of the connection values set on the service configuration for only the request, use the 
 `connectionTimeout`, `readTimeout` and `followRedirects` flags:
 
 ```js
-var res = app.endpoints.http.get({
+var res = app.svc.http.get({
   path: '/data/companies',
   connectionTimeout: 1000,  // 1 sec
   readTimeout: 30000,       // 30 sec
@@ -351,7 +359,7 @@ make it easier. There are three additional options that can be sent in `GET` req
 If you want to download a file in a synchronous way you should do something like this:
 
 ```js
-var res = app.endpoints.http.get({
+var res = app.svc.http.get({
   path: '/images/client_400x400.png',
   forceDownload: true,
   downloadSync: true
@@ -371,7 +379,7 @@ sys.data.save(record);
 If you don't want to block execution until the download is completed, you can do it asynchronously:
 
 ```js
-var res = app.endpoints.http.get(
+var res = app.svc.http.get(
   {
     path: '/images/client_400x400.png',
     forceDownload: true
@@ -395,7 +403,7 @@ var res = app.endpoints.http.get(
 );
 ```
 
-This works like any other [endpoint callback]({{site.baseurl}}/app_development_model_endpoints.html#callbacks)
+This works like any other [endpoint callback]({{site.baseurl}}/app-development-model-endpoints.html#callbacks)
 where the event is 'fileDownloaded'.
 
 ### POST requests
@@ -403,7 +411,7 @@ where the event is 'fileDownloaded'.
 You can make `POST` requests like this:
 
 ```js
-var res = app.endpoints.http.post({
+var res = app.svc.http.post({
   path: '/data/companies',
   headers: {
     'Content-Type': 'application/json',
@@ -425,7 +433,7 @@ var body = {
   name: 'test 1',
   type: 'a'
 };
-var res = app.endpoints.http.post('/data/companies', body);
+var res = app.svc.http.post('/data/companies', body);
 ```
 
 ### PUT requests
@@ -433,7 +441,7 @@ var res = app.endpoints.http.post('/data/companies', body);
 You can make `PUT` requests like this:
 
 ```js
-var res = app.endpoints.http.put({
+var res = app.svc.http.put({
   path: '/data/companies/5506fc3dc2eee3b1a70263b3',
   headers: {
     'Content-Type': 'application/json',
@@ -453,7 +461,7 @@ You can also use a shortcut:
 var body = {
   type: 'b'
 };
-var res = app.endpoints.http.put('/data/companies/5506fc3dc2eee3b1a70263b3', body);
+var res = app.svc.http.put('/data/companies/5506fc3dc2eee3b1a70263b3', body);
 ```
 
 ### PATCH requests
@@ -461,7 +469,7 @@ var res = app.endpoints.http.put('/data/companies/5506fc3dc2eee3b1a70263b3', bod
 You can make `PATCH` requests like this:
 
 ```js
-var res = app.endpoints.http.patch({
+var res = app.svc.http.patch({
   path: '/data/companies/5506fc3dc2eee3b1a70263b3',
   headers: {
     'Content-Type': 'application/json',
@@ -481,7 +489,7 @@ You can also use a shortcut:
 var body = {
   type: 'b'
 };
-var res = app.endpoints.http.patch('/data/companies/5506fc3dc2eee3b1a70263b3', body);
+var res = app.svc.http.patch('/data/companies/5506fc3dc2eee3b1a70263b3', body);
 ```
 
 ### DELETE requests
@@ -489,7 +497,7 @@ var res = app.endpoints.http.patch('/data/companies/5506fc3dc2eee3b1a70263b3', b
 You can make `DELETE` requests like this:
 
 ```js
-var res = app.endpoints.http.delete({
+var res = app.svc.http.delete({
   path: '/data/companies/5506fc3dc2eee3b1a70263b3',
   headers: {
     'Accept': 'application/json',
@@ -502,7 +510,7 @@ log(JSON.stringify(res));
 You can also use a shortcut:
 
 ```js
-var res = app.endpoints.http.delete('/data/companies/5506fc3dc2eee3b1a70263b3');
+var res = app.svc.http.delete('/data/companies/5506fc3dc2eee3b1a70263b3');
 ```
 
 ### OPTIONS requests
@@ -510,7 +518,7 @@ var res = app.endpoints.http.delete('/data/companies/5506fc3dc2eee3b1a70263b3');
 You can make `OPTIONS` requests like this:
 
 ```js
-var res = app.endpoints.http.options({
+var res = app.svc.http.options({
   path: '/data/companies/5506fc3dc2eee3b1a70263b3',
   headers: {
     token: token
@@ -523,7 +531,7 @@ log(JSON.stringify(res));
 You can also use a shortcut:
 
 ```js
-var res = app.endpoints.http.options('/data/companies/5506fc3dc2eee3b1a70263b3');
+var res = app.svc.http.options('/data/companies/5506fc3dc2eee3b1a70263b3');
 ```
 
 ### HEAD requests
@@ -531,7 +539,7 @@ var res = app.endpoints.http.options('/data/companies/5506fc3dc2eee3b1a70263b3')
 You can make `HEAD` requests like this:
 
 ```js
-var res = app.endpoints.http.head({
+var res = app.svc.http.head({
   path: '/data/companies/5506fc3dc2eee3b1a70263b3',
   headers: {
     token: token
@@ -544,7 +552,7 @@ log(JSON.stringify(res));
 You can also use a shortcut:
 
 ```js
-var res = app.endpoints.http.head('/data/companies/5506fc3dc2eee3b1a70263b3');
+var res = app.svc.http.head('/data/companies/5506fc3dc2eee3b1a70263b3');
 ```
 
 ### Multipart requests
@@ -570,7 +578,7 @@ var request = {
         }
     ]
 };
-var res = app.endpoints.http.post(request);
+var res = app.svc.http.post(request);
 ```
 
 As you can see you can send one or many parts in the multipart. Each part has the following fields:
@@ -586,7 +594,7 @@ As you can see you can send one or many parts in the multipart. Each part has th
 ### Webhooks
 
 When an external service calls the webhook URL, an event will triggered in the app that you can
-catch in an [endpoint listener]({{site.baseurl}}/app_development_model_listeners.html#endpoint-listeners)
+catch in an [endpoint listener]({{site.baseurl}}/app-development-model-listeners.html#endpoint-listeners)
 like this one:
 
 ```js
@@ -600,10 +608,10 @@ Keep in mind that headers keys will be in lower case.
 The field `requestInfo` contains this information:
 
 - `method`: it is the HTTP verb, like `POST`, `GET`, etc.
-- `url`: the full URL of the request, like `https://app.slingrs.io/prod/endpoints/http`.
+- `url`: the full URL of the request, like `https://app.slingrs.io/prod/svc/http`.
 - `encoding`: encoding of the request, like `UTF-8`.
 
-Keep in mind that the endpoint will just respond with `200` status code with `ok` as the body and 
+Keep in mind that the service will just respond with `200` status code with `ok` as the body and 
 you won't be able to provide a custom response.
 
 ### Sync Webhooks
@@ -630,4 +638,4 @@ SLINGR is a low-code rapid application development platform that accelerates dev
 
 ## License
 
-This endpoint is licensed under the Apache License 2.0. See the `LICENSE` file for more details.
+This service is licensed under the Apache License 2.0. See the `LICENSE` file for more details.

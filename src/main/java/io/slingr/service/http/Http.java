@@ -8,7 +8,6 @@ import io.slingr.services.exceptions.ServiceException;
 import io.slingr.services.framework.annotations.*;
 import io.slingr.services.services.AppLogs;
 import io.slingr.services.utils.Json;
-import io.slingr.services.utils.Strings;
 import io.slingr.services.ws.exchange.WebServiceRequest;
 import io.slingr.services.ws.exchange.WebServiceResponse;
 import org.apache.commons.lang3.StringUtils;

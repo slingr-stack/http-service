@@ -56,20 +56,6 @@ public class Http extends HttpService {
         httpService().setFollowRedirects(Configuration.parseBooleanValue(configuration.string("followRedirects"), true));
         httpService().setConnectionTimeout(configuration.integer("connectionTimeout", 5000));
         httpService().setReadTimeout(configuration.integer("readTimeout", 60000));
-        final String authType = configuration.string("authType", "");
-        if (StringUtils.isNotBlank(authType)) {
-            final String username = configuration.string("username", "");
-            final String password = configuration.string("password", "");
-            if ("basic".equalsIgnoreCase(authType)) {
-                httpService().setupBasicAuthentication(username, password);
-                logger.info(String.format("Configured HTTP Basic authentication: username [%s] - password [%s]", username, Strings.maskToken(password)));
-            } else if ("digest".equalsIgnoreCase(authType)) {
-                httpService().setupDigestAuthentication(username, password);
-                logger.info(String.format("Configured HTTP Digest authentication: username [%s] - password [%s]", username, Strings.maskToken(password)));
-            } else {
-                logger.info("Configured without HTTP authentication");
-            }
-        }
         logger.info(String.format("Configured HTTP service: baseUrl [%s]", baseUrl));
     }
 

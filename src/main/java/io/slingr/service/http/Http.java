@@ -38,6 +38,7 @@ public class Http extends HttpService {
 
     @Override
     public void serviceStarted() {
+        logger.info("Initializing http-service");
         final String headers = configuration.string("defaultHeaders", "");
         try {
             final Json jHeaders = checkHeaders(headers);

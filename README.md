@@ -227,7 +227,7 @@ For example if an external service responds with the following XML:
 
 It will be automatically converted to:
 
-```js
+```json
 {
   "request": {
     "@method": "client.delete",

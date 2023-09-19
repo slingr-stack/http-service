@@ -1,28 +1,16 @@
 package io.slingr.service.http;
 
-
 import io.slingr.services.services.exchange.Parameter;
 import io.slingr.services.utils.Json;
 import io.slingr.services.utils.tests.ServiceTests;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.junit.Assert.*;
 
-/**
- * <p>Test over the Http class and RequestBin
- *
- * <p>Created by lefunes on 03/28/16.
- */
-/**
- * <p>Test over the Http class and RequestBin
- *
- * <p>Created by lefunes on 03/28/16.
- */
-@Ignore("For dev proposes")
+@SuppressWarnings("SpellCheckingInspection")
 public class HttpTest {
 
     private static final Logger logger = LoggerFactory.getLogger(HttpTest.class);
@@ -35,7 +23,7 @@ public class HttpTest {
     }
 
     @Test
-    public void testPostRequest() throws Exception {
+    public void testPostRequest() {
         // build request
         final Json req = Json.map();
         req.set("body", Json.map().set("field1", "A").set("field2", "B"));
@@ -47,7 +35,7 @@ public class HttpTest {
         assertNotNull(res);
         assertFalse(res.is(Parameter.EXCEPTION_FLAG));
         // body is 'ok'
-        assertEquals(null, res.string("body"));
+        assertNull(res.string("body"));
         // it is not a full response
         assertFalse(res.is("fullResponse"));
 

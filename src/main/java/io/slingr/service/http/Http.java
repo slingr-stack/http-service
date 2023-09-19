@@ -1,6 +1,5 @@
 package io.slingr.service.http;
 
-
 import io.slingr.services.HttpService;
 import io.slingr.services.configurations.Configuration;
 import io.slingr.services.exceptions.ErrorCode;
@@ -20,6 +19,7 @@ import static io.slingr.services.services.HttpService.defaultWebhookConverter;
 @SlingrService(name = "http")
 public class Http extends HttpService {
 
+    private static final String SERVICE_NAME = "http";
     private static final Logger logger = LoggerFactory.getLogger(Http.class);
 
     @ApplicationLogger
@@ -38,7 +38,8 @@ public class Http extends HttpService {
 
     @Override
     public void serviceStarted() {
-        logger.info("Initializing http-service");
+        logger.info(String.format("Initializing service [%s]", SERVICE_NAME));
+        appLogs.info(String.format("Initializing service [%s]", SERVICE_NAME));
         final String headers = configuration.string("defaultHeaders", "");
         try {
             final Json jHeaders = checkHeaders(headers);
@@ -56,7 +57,7 @@ public class Http extends HttpService {
         httpService().setFollowRedirects(Configuration.parseBooleanValue(configuration.string("followRedirects"), true));
         httpService().setConnectionTimeout(configuration.integer("connectionTimeout", 5000));
         httpService().setReadTimeout(configuration.integer("readTimeout", 60000));
-        logger.info(String.format("Configured HTTP service: baseUrl [%s]", baseUrl));
+        logger.info(String.format("Configured service [%s]: baseUrl [%s]", SERVICE_NAME,  baseUrl));
     }
 
     /**
@@ -83,10 +84,10 @@ public class Http extends HttpService {
     }
     @ServiceWebService(path = "/{externalService}")
     public WebServiceResponse asyncWebhook(WebServiceRequest request) {
+        logger.info(String.format("Webhook received for service [%s]", SERVICE_NAME));
         try {
-            Json body = request.getJsonBody();
             events().send("webhook",  defaultWebhookConverter(request));
-            return new WebServiceResponse("ok");
+            return new WebServiceResponse("Ok");
         } catch (ClassCastException cce) {
             appLogs.error("The response to the webhook from the listener is not a valid JSON");
         } catch (Exception e) {
@@ -94,8 +95,10 @@ public class Http extends HttpService {
         }
         return new WebServiceResponse(Json.map(), ContentType.APPLICATION_JSON.toString());
     }
+
     @ServiceWebService(path = "{externalService}/sync")
     public WebServiceResponse optionsLoad(WebServiceRequest request) {
+        logger.info(String.format("Webhook sync received for service [%s]", SERVICE_NAME));
         try {
             Json options = (Json) events().sendSync("webhookSync", defaultWebhookConverter(request));
             return new WebServiceResponse(options, ContentType.APPLICATION_JSON.toString());

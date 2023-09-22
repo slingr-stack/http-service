@@ -3,15 +3,15 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>io.slingr.service</groupId>
     <artifactId>http</artifactId>
-    <version>0.0.1</version>
+    <version>1.0</version>
     <name>SLINGR - Http service</name>
     <description>Default component to manage a connection Http to request external service of the Slingr platform</description>
     <packaging>jar</packaging>
     <properties>
         <!-- Slingr versions -->
-        <slingr.slingr-service.version>0.0.1-SNAPSHOT</slingr.slingr-service.version>
+        <slingr.slingr-service.version>2.0-SNAPSHOT</slingr.slingr-service.version>
         <!-- Build properties -->
-        <jdk.version>20</jdk.version>
+        <jdk.version>11</jdk.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.build.compiler.version>2.5.1</project.build.compiler.version>
         <project.build.source.version>3.0.1</project.build.source.version>

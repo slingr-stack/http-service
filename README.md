@@ -8,7 +8,7 @@ summary: "Detailed description of the API of the HTTP Service."
 
 ## Overview
 
-The HTTP service allows to make HTTP requests as well as receive HTTP request from
+The HTTP service allows making HTTP requests as well as receiving HTTP requests from
 other servers. This is the list of features:
 
 - Send HTTP requests (`GET`, `PUT`, `POST`, etc.) to other servers
@@ -20,22 +20,22 @@ other servers. This is the list of features:
 - Support for redirects
 - Support for SSL
 
-In many cases you can use the HTTP service to call external services where an official
+In many cases, you can use the HTTP service to call external services where an official
 service does not exist. This will work as long as they provide a REST HTTP API.
 
 ## Configuration
 
 ### Base URL
 
-If all the request you will be doing through this service have a common root URL, you can
+If all the requests you will be doing through this service have a common root URL, you can
 put it here to avoid having to pass it on every request.
 
 You can also leave this empty and provide the full URL on each request.
 
 ### Default headers
 
-Allows to define headers that will be added to all requests done through this service. The
-format is `key=value` and you can specify several headers separated by commas:
+Allows defining headers that will be added to all requests done through this service.
+The format is `key=value` and you can specify several headers separated by commas:
 
 ```
 Content-Type=application/json,Accept=application/json
@@ -51,7 +51,7 @@ that will be used. You can leave this empty if you don't want any default path.
 This is the authorization used to make requests. Options are:
 
 - `No authorization`: no authorization will be done. This is the case for public services or when
-  you have a custom authorization method (for example a token sent in headers).
+  you have a custom authorization method (for example, a token sent in headers).
 - `Basic authorization`: basic authorization will be used. You will need to provide username 
   and password. 
 - `Digest authorization`: digest authorization will be used. You will need to provide username
@@ -80,14 +80,16 @@ This is useful to avoid external requests to other services. This will ignore th
 ### Connection timeout
 
 This is the maximum time the service waits to perform the connection to an external 
-service. If it times out, an exception is thrown and the request cancelled. 
-Default value: 5000 ms (5 sec). Set to zero for to wait indefinitely. 
+service.
+If it times out, an exception is thrown and the request canceled. 
+Default value: 5000 ms (5 sec).
+Set to zero for to wait indefinitely. 
 
 ### Read timeout
 
 This is the maximum time the service waits to receive the response to a request to 
 an external service. If it times out, an exception is thrown and the request 
-cancelled. Default value: 60000 ms (60 sec). Set to zero to wait indefinitely.
+canceled. Default value: 60000 ms (60 sec). Set to zero to wait indefinitely.
 
 ### Follow redirects
 
@@ -104,8 +106,8 @@ to the app.
 This is the URL the service will be listening for requests, which will be sent as events
 to the app.
 
-The difference with the webhooks above is that in this case the listener should return a
-JSON object that will be return to the caller.
+The difference with the webhooks above is that in this case, the listener should return a
+JSON object that will be returned to the caller.
 
 ## Quick start
 
@@ -126,7 +128,7 @@ res.items.forEach(function(item) {
 });
 ```
 
-Also a `POST` request can send information like this:
+Also, a `POST` request can send information like this:
 
 ```js
 var res = app.svc.http.post({
@@ -153,7 +155,7 @@ try {
 }
 ```
 
-In webhooks you will have all the information of the request in the event:
+In webhooks, you will have all the information of the request in the event:
 
 ```js
 sys.logs.info('request info: ' + JSON.stringify(event.data.requestInfo));
@@ -164,11 +166,11 @@ sys.logs.info('request body: ' + JSON.stringify(event.data.body));
 ## Content format
 
 The service has some special handling for `JSON` and `XML` content types which are explained
-below in detail. For other content types it will just try to convert the content to a plain
-string and will be responsibility of the developer to handle it.
-
-If you are working with binary data you probably need to download it. Check the section 
-[Downloading files](#donwloading-files) for more information.
+below in detail.
+For other content types, it will just try to convert the content to a plain
+string and will be the responsibility of the developer to handle it.
+If you are working with binary data, you probably need to download it.
+Check the section [Downloading files](#downloading-files) for more information.
 
 ### JSON
 
@@ -203,9 +205,9 @@ var res = app.svc.http.post({
 });
 ```
 
-In this case the object is automatically converted to a JSON string.
+In this case, the object is automatically converted to a JSON string.
 
-For webhook events the same conversion will be done:
+For webhook events, the same conversion will be done:
 
 ```js
 log('name: '+event.data.body.name);
@@ -216,7 +218,7 @@ log('name: '+event.data.body.name);
 If the content type is `application/json` the service will automatically convert the content
 from and to a Javascript object using [JXON](https://developer.mozilla.org/en-US/docs/JXON): 
 
-For example if an external service responds with the following XML:
+For example, if an external service responds with the following XML:
 
 ```
 <?xml version="1.0" encoding="utf-8"?>
@@ -236,7 +238,7 @@ It will be automatically converted to:
 }
 ```
 
-The conversion also works the other way around. For example for the following call:
+The conversion also works the other way around. For example, for the following call:
 
 ```js
 var request = {'request': {'@method':"system.current"}};
@@ -256,10 +258,6 @@ The body sent to the external service will be converted to this XML:
 <request method="system.current"></request>
 ```
 
-Here are some considerations when converting from/to XML:
-
-{% include custom/http_endpoint_xml_conversion.html %}
-
 ## Javascript API
 
 All methods in the Javascript API allow the following options:
@@ -268,10 +266,10 @@ All methods in the Javascript API allow the following options:
   the service this path will be appended to the URL.
 - `params`: an object with query parameters for the request (they go in the query string part of 
   the request).
-- `headers`: an object with headers to send in the request. If you provide headers these will 
-  override the ones defined in the service's configuration.
+- `headers`: an object with headers to send in the request.
+  If you provide headers, these will override the ones defined in the service's configuration.
 - `body`: this is the body of the request. If you are using JSON, you can directly send an object
-  or array and it will be automatically converted to a JSON string. If you are using XML content
+  or array, and it will be automatically converted to a JSON string. If you are using an XML content
   type, this will be converted based on the rules defined [above](#xml).
 - `fullResponse`: controls what will be set in the response. If `true` the response when calling
   an HTTP method will be an object with fields `status`, `headers` and `body`. This is important 
@@ -304,7 +302,7 @@ var res = app.svc.http.get({
 log(JSON.stringify(res)); // this will print the body of the response
 ```
 
-If you need to get information of the headers you can send the `fullResponse` flag in `true`:
+If you need to get information of the headers, you can send the `fullResponse` flag in `true`:
 
 ```js
 var res = app.svc.http.get({
@@ -324,7 +322,7 @@ log(JSON.stringify(res.headers));
 log(JSON.stringify(res.body));
 ```
 
-Keep in mind that headers keys will be all lower case.
+Keep in mind that header keys will be all lower case.
 
 You can also use a shortcut:
 
@@ -346,17 +344,17 @@ var res = app.svc.http.get({
 
 #### Downloading files
 
-Through `GET` requests it is possible to download files and there are some specific features to
+Through `GET` requests it is possible to download files, and there are some specific features to
 make it easier. There are three additional options that can be sent in `GET` requests:
 
 - `forceDownload`: indicates that the resource has to be downloaded into a file instead of
   returning it in the response.
-- `downloadSync`: if `true` the method won't return until the file has been downloaded and it
+- `downloadSync`: if `true` the method won't return until the file has been downloaded, and it
   will return all the information of the file. See samples below. Default value is `false`.
-- `fileName`: if provided, the file will be stored with this name. If empty the file name will be
-  calculated from the URL.
+- `fileName`: if provided, the file will be stored with this name.
+  If empty, the file name will be calculated from the URL.
   
-If you want to download a file in a synchronous way you should do something like this:
+If you want to download a file in a synchronous way, you should do something like this:
 
 ```js
 var res = app.svc.http.get({
@@ -403,8 +401,7 @@ var res = app.svc.http.get(
 );
 ```
 
-This works like any other [endpoint callback]({{site.baseurl}}/app-development-model-endpoints.html#callbacks)
-where the event is 'fileDownloaded'.
+This works like any other callback where the event is `fileDownloaded`.
 
 ### POST requests
 
@@ -581,7 +578,7 @@ var request = {
 var res = app.svc.http.post(request);
 ```
 
-As you can see you can send one or many parts in the multipart. Each part has the following fields:
+As you can see, you can send one or many parts in the multipart. Each part has the following fields:
 
 - `name`: the name of the field in the multipart.
 - `type`: can be `file` if it is a file or `other` if it is any other content.
@@ -593,9 +590,8 @@ As you can see you can send one or many parts in the multipart. Each part has th
 
 ### Webhooks
 
-When an external service calls the webhook URL, an event will triggered in the app that you can
-catch in an [endpoint listener]({{site.baseurl}}/app-development-model-listeners.html#endpoint-listeners)
-like this one:
+When an external service calls the webhook URL, an event will be triggered in the app that you can
+catch in a listener like this one:
 
 ```js
 sys.logs.info('request info: ' + JSON.stringify(event.data.requestInfo));
@@ -603,7 +599,7 @@ sys.logs.info('request headers: ' + JSON.stringify(event.data.headers));
 sys.logs.info('request body: ' + JSON.stringify(event.data.body));
 ```
 
-Keep in mind that headers keys will be in lower case.
+Keep in mind that header keys will be in lower case.
 
 The field `requestInfo` contains this information:
 
@@ -611,12 +607,12 @@ The field `requestInfo` contains this information:
 - `url`: the full URL of the request, like `https://app.slingrs.io/prod/svc/http`.
 - `encoding`: encoding of the request, like `UTF-8`.
 
-Keep in mind that the service will just respond with `200` status code with `ok` as the body and 
+Keep in mind that the service will just respond with `200` status code with `ok` as the body, and 
 you won't be able to provide a custom response.
 
 ### Sync Webhooks
 
-This work exactly the same as the regular webhooks with the only difference that you can return
+This works exactly the same as the regular webhooks with the only difference that you can return
 the response from the listener that process the webhook. For example, the listener could be like
 this:
 

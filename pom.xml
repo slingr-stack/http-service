@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>io.slingr.service</groupId>
+    <groupId>io.github.slingr-stack</groupId>
     <artifactId>http</artifactId>
-    <version>1.0</version>
+    <version>1.0-SNAPSHOT</version>
     <name>SLINGR - Http service</name>
     <description>Default component to manage a connection Http to request external service of the Slingr platform</description>
     <packaging>jar</packaging>
@@ -23,9 +23,9 @@
         <!-- SLINGR Service Framework -->
         <!--suppress VulnerableLibrariesLocal -->
         <dependency>
-            <groupId>io.slingr.services</groupId>
+            <groupId>io.github.slingr-stack</groupId>
             <artifactId>slingr-services</artifactId>
-            <version>${slingr.slingr-service.version}</version>
+            <version>1.0-SNAPSHOT</version>
         </dependency>
     </dependencies>
     <repositories>
@@ -36,28 +36,18 @@
             <layout>default</layout>
         </repository>
         <repository>
-            <id>slingrRepo.release</id>
-            <url>https://repo.slingrs.io/release</url>
-            <releases>
-                <enabled>true</enabled>
-                <checksumPolicy>fail</checksumPolicy>
-            </releases>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </repository>
-        <repository>
-            <id>slingrRepo.snapshot</id>
-            <url>https://repo.slingrs.io/snapshot</url>
-            <releases>
-                <enabled>false</enabled>
-            </releases>
-            <snapshots>
-                <enabled>true</enabled>
-                <checksumPolicy>warn</checksumPolicy>
-            </snapshots>
+            <id>clojars</id>
+            <name>Clojars repository</name>
+            <url>https://clojars.org/repo</url>
         </repository>
     </repositories>
+    <distributionManagement>
+        <repository>
+            <id>clojars</id>
+            <name>Clojars repository</name>
+            <url>https://clojars.org/repo</url>
+        </repository>
+    </distributionManagement>
     <build>
         <plugins>
             <plugin>

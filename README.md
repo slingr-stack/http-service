@@ -25,48 +25,6 @@ service does not exist. This will work as long as they provide a REST HTTP API.
 
 ## Configuration
 
-### Base URL
-
-If all the requests you will be doing through this service have a common root URL, you can
-put it here to avoid having to pass it on every request.
-
-You can also leave this empty and provide the full URL on each request.
-
-### Default headers
-
-Allows defining headers that will be added to all requests done through this service.
-The format is `key=value` and you can specify several headers separated by commas:
-
-```
-Content-Type=application/json,Accept=application/json
-```
-
-### Empty path
-
-If the path is empty when a request is done through the service, this is the default path
-that will be used. You can leave this empty if you don't want any default path.
-
-### Authorization
-
-This is the authorization used to make requests. Options are:
-
-- `No authorization`: no authorization will be done. This is the case for public services or when
-  you have a custom authorization method (for example, a token sent in headers).
-- `Basic authorization`: basic authorization will be used. You will need to provide username 
-  and password. 
-- `Digest authorization`: digest authorization will be used. You will need to provide username
-  and password.
-  
-### Username
-
-Username to access the external service. Needed when using `Basic authorization` or 
-`Digest authorization`.
-
-### Password
-
-Password to access the external service. Needed when using `Basic authorization` or 
-`Digest authorization`.
-
 ### Remember cookies
 
 Enable this flag if you want to use a basic system to exchange cookies with the external 
@@ -114,40 +72,32 @@ JSON object that will be returned to the caller.
 You can make a simple `GET` request like this:
 
 ```js
-var res = app.svc.http.get({
-  path: '/orders',
+var res = svc.http.get({
+  url: 'https://postman-echo.com/get',
   params: {
-    type: 'a'
-  },
-  headers: {
-    token: token
+    foo1: '1'
   }
 });
-res.items.forEach(function(item) {
-  log('item: '+item.name);
-});
+log('Response: '+ JSON.stringify(res));
 ```
 
 Also, a `POST` request can send information like this:
 
 ```js
-var res = app.svc.http.post({
-  path: '/companies',
-  headers: {
-    token: token
-  },
+var res = svc.http.post({
+  url: 'https://postman-echo.com/post',
   body: {
     name: 'test1'
   }
 });
-log('response from server: '+JSON.stringify(res));
+log('Response: '+ JSON.stringify(res));
 ```
 
 If the response code is not `2XX` you can catch the exception:
 
 ```js
 try {
-  app.svc.http.post(msg);
+  svc.http.post(msg);
 } catch (e) {
   log('status code: '+e.additionalInfo.status);
   log('headers: '+JSON.stringify(e.additionalInfo.headers));
@@ -162,6 +112,60 @@ sys.logs.info('request info: ' + JSON.stringify(event.data.requestInfo));
 sys.logs.info('request headers: ' + JSON.stringify(event.data.headers));
 sys.logs.info('request body: ' + JSON.stringify(event.data.body));
 ```
+## Authentication
+
+### Basic
+
+```js
+var res = svc.http.get({
+  url: 'https://postman-echo.com/basic-auth',
+  params: {
+    foo1: '1'
+  },
+  authorization : {
+    type: "basic",
+    username: "postman",
+    password: "password"
+  }
+});
+log('Response: '+ JSON.stringify(res));
+```
+
+
+### Digest
+
+```js
+var res = svc.http.get({
+  url: 'https://postman-echo.com/digest-auth',
+  params: {
+    foo1: '1'
+  },
+  authorization : {
+    type: "digest",
+    username: "postman",
+    password: "password"
+  }
+});
+log('Response: '+ JSON.stringify(res));
+```
+
+Any other unlisted authentication method can use the header to send the required data, for example, a token.
+
+```js
+var res = svc.http.get({
+  url: 'https://postman-echo.com/headers',
+  params: {
+    foo1: '1'
+  },
+  headers: {
+    'Content-Type': 'text/xml',
+    token : "123"
+  },
+});
+log('Response: '+ JSON.stringify(res));
+```
+
+If you require complex authentication methods such as OAuth, OAuth2, etc., it is recommended to use packages.
 
 ## Content format
 
@@ -175,17 +179,12 @@ Check the section [Downloading files](#downloading-files) for more information.
 ### JSON
 
 If the content type is `application/json` the service will automatically convert the content
-from and to JSON. For example when you make a `GET` request like this:
-
-```js
-var res = app.svc.get('/companies/'+companyId);
-log('company name: '+res.name);
-```
+from and to JSON.
 
 If the response is an array, it will be converted to an array:
 
 ```js
-var res = app.svc.get('/repositories');
+var res = svc.http.get('/repositories');
 res.forEach(function(repo) {
   log('repo: '+repo.name);
 });
@@ -194,11 +193,8 @@ res.forEach(function(repo) {
 Same when you send data through `POST` or `PUT` requests:
 
 ```js
-var res = app.svc.http.post({
-  path: '/companies',
-  headers: {
-    token: token
-  },
+var res = svc.http.post({
+  url: 'https://postman-echo.com/post',
   body: {
     name: 'test1'
   }
@@ -243,12 +239,14 @@ The conversion also works the other way around. For example, for the following c
 ```js
 var request = {'request': {'@method':"system.current"}};
 var msg = {
+  url: 'https://postman-echo.com/post',
   headers: {
     'Content-Type': 'text/xml'  // needed to enforce the conversion
   },
   body: request
 };
-var response = app.svc.http.post(msg);
+var res = svc.http.post(msg);
+log('Response: '+ JSON.stringify(res));
 ```
 
 The body sent to the external service will be converted to this XML:
@@ -261,9 +259,7 @@ The body sent to the external service will be converted to this XML:
 ## Javascript API
 
 All methods in the Javascript API allow the following options:
-
-- `path`: the URL you will send the request. Keep in mind that if you configured a `Base URL` in
-  the service this path will be appended to the URL.
+- `url`: the URL you will send the request.
 - `params`: an object with query parameters for the request (they go in the query string part of 
   the request).
 - `headers`: an object with headers to send in the request.
@@ -288,10 +284,10 @@ Check each method to see how to pass these options.
 You can make `GET` requests like this:
 
 ```js
-var res = app.svc.http.get({
-  path: '/data/companies',
+var res = svc.http.get({
+  url: 'https://postman-echo.com/get',
   params: {
-    type: 'a'
+    foo1: '1'
   },
   headers: {
     'Content-Type': 'application/json',
@@ -305,10 +301,10 @@ log(JSON.stringify(res)); // this will print the body of the response
 If you need to get information of the headers, you can send the `fullResponse` flag in `true`:
 
 ```js
-var res = app.svc.http.get({
-  path: '/data/companies',
+var res = svc.http.get({
+  url: 'https://postman-echo.com/get',
   params: {
-    type: 'a'
+    foo1: '1'
   },
   headers: {
     'Content-Type': 'application/json',
@@ -327,15 +323,16 @@ Keep in mind that header keys will be all lower case.
 You can also use a shortcut:
 
 ```js
-var res = app.svc.http.get('/data/companies');
+var res = svc.http.get({url:'https://postman-echo.com/get'});
+log('Response: '+ JSON.stringify(res));
 ```
 
 If you want to overwrite some of the connection values set on the service configuration for only the request, use the 
 `connectionTimeout`, `readTimeout` and `followRedirects` flags:
 
 ```js
-var res = app.svc.http.get({
-  path: '/data/companies',
+var res = svc.http.get({
+  url:'https://postman-echo.com/get',
   connectionTimeout: 1000,  // 1 sec
   readTimeout: 30000,       // 30 sec
   followRedirects: false    // redirects disabled
@@ -357,8 +354,8 @@ make it easier. There are three additional options that can be sent in `GET` req
 If you want to download a file in a synchronous way, you should do something like this:
 
 ```js
-var res = app.svc.http.get({
-  path: '/images/client_400x400.png',
+var res = svc.http.get({
+  url:'.../images/client_400x400.png',
   forceDownload: true,
   downloadSync: true
 });
@@ -377,9 +374,9 @@ sys.data.save(record);
 If you don't want to block execution until the download is completed, you can do it asynchronously:
 
 ```js
-var res = app.svc.http.get(
+var res = svc.http.get(
   {
-    path: '/images/client_400x400.png',
+    url: '.../images/client_400x400.png',
     forceDownload: true
   },
   {
@@ -405,15 +402,12 @@ This works like any other callback where the event is `fileDownloaded`.
 
 ### POST requests
 
-You can make `POST` requests like this:
-
 ```js
-var res = app.svc.http.post({
-  path: '/data/companies',
+var res = svc.http.post({
+  url: 'https://postman-echo.com/post',
   headers: {
     'Content-Type': 'application/json',
-    'Accept': 'application/json',
-    token: token
+    'Accept': 'application/json'
   },
   body: {
     name: 'test 1',
@@ -430,7 +424,7 @@ var body = {
   name: 'test 1',
   type: 'a'
 };
-var res = app.svc.http.post('/data/companies', body);
+var res = svc.http.post({url: 'https://postman-echo.com/post',body: body});
 ```
 
 ### PUT requests
@@ -438,12 +432,11 @@ var res = app.svc.http.post('/data/companies', body);
 You can make `PUT` requests like this:
 
 ```js
-var res = app.svc.http.put({
-  path: '/data/companies/5506fc3dc2eee3b1a70263b3',
+var res = svc.http.put({
+  url: 'https://postman-echo.com/put',
   headers: {
     'Content-Type': 'application/json',
-    'Accept': 'application/json',
-    token: token
+    'Accept': 'application/json'
   },
   body: {
     type: 'b'
@@ -458,7 +451,7 @@ You can also use a shortcut:
 var body = {
   type: 'b'
 };
-var res = app.svc.http.put('/data/companies/5506fc3dc2eee3b1a70263b3', body);
+var res = svc.http.put({url: 'https://postman-echo.com/put',body: body});
 ```
 
 ### PATCH requests
@@ -466,12 +459,11 @@ var res = app.svc.http.put('/data/companies/5506fc3dc2eee3b1a70263b3', body);
 You can make `PATCH` requests like this:
 
 ```js
-var res = app.svc.http.patch({
-  path: '/data/companies/5506fc3dc2eee3b1a70263b3',
+var res = svc.http.patch({
+  url: 'https://postman-echo.com/patch',
   headers: {
     'Content-Type': 'application/json',
-    'Accept': 'application/json',
-    token: token
+    'Accept': 'application/json'
   },
   body: {
     type: 'b'
@@ -486,7 +478,7 @@ You can also use a shortcut:
 var body = {
   type: 'b'
 };
-var res = app.svc.http.patch('/data/companies/5506fc3dc2eee3b1a70263b3', body);
+var res = svc.http.patch({url: 'https://postman-echo.com/patch',body: body});
 ```
 
 ### DELETE requests
@@ -494,11 +486,10 @@ var res = app.svc.http.patch('/data/companies/5506fc3dc2eee3b1a70263b3', body);
 You can make `DELETE` requests like this:
 
 ```js
-var res = app.svc.http.delete({
-  path: '/data/companies/5506fc3dc2eee3b1a70263b3',
+var res = svc.http.delete({
+  url: 'https://postman-echo.com/delete',
   headers: {
-    'Accept': 'application/json',
-    token: token
+    'Accept': 'application/json'
   }
 });
 log(JSON.stringify(res));
@@ -507,7 +498,7 @@ log(JSON.stringify(res));
 You can also use a shortcut:
 
 ```js
-var res = app.svc.http.delete('/data/companies/5506fc3dc2eee3b1a70263b3');
+var res = svc.http.delete({url: 'https://postman-echo.com/delete',body: body});
 ```
 
 ### OPTIONS requests
@@ -515,11 +506,8 @@ var res = app.svc.http.delete('/data/companies/5506fc3dc2eee3b1a70263b3');
 You can make `OPTIONS` requests like this:
 
 ```js
-var res = app.svc.http.options({
-  path: '/data/companies/5506fc3dc2eee3b1a70263b3',
-  headers: {
-    token: token
-  },
+var res = svc.http.options({
+  url: 'https://postman-echo.com/options',
   fullResponse: true
 });
 log(JSON.stringify(res));
@@ -528,7 +516,7 @@ log(JSON.stringify(res));
 You can also use a shortcut:
 
 ```js
-var res = app.svc.http.options('/data/companies/5506fc3dc2eee3b1a70263b3');
+var res = svc.http.options({url: 'https://postman-echo.com/options'});
 ```
 
 ### HEAD requests
@@ -536,11 +524,8 @@ var res = app.svc.http.options('/data/companies/5506fc3dc2eee3b1a70263b3');
 You can make `HEAD` requests like this:
 
 ```js
-var res = app.svc.http.head({
-  path: '/data/companies/5506fc3dc2eee3b1a70263b3',
-  headers: {
-    token: token
-  },
+var res = svc.http.head({
+  url: 'https://postman-echo.com/head',
   fullResponse: true
 });
 log(JSON.stringify(res));
@@ -549,7 +534,7 @@ log(JSON.stringify(res));
 You can also use a shortcut:
 
 ```js
-var res = app.svc.http.head('/data/companies/5506fc3dc2eee3b1a70263b3');
+var res = svc.http.head({url: 'https://postman-echo.com/head'});
 ```
 
 ### Multipart requests
@@ -559,7 +544,7 @@ sending files. It works like this:
 
 ```js
 var request = {
-    path: '/customers/'+customerId+'/documents/'+documentId,
+    url: '.../customers/'+customerId+'/documents/'+documentId,
     multipart: true,
     parts: [
         {
@@ -575,7 +560,7 @@ var request = {
         }
     ]
 };
-var res = app.svc.http.post(request);
+var res = svc.http.post(request);
 ```
 
 As you can see, you can send one or many parts in the multipart. Each part has the following fields:

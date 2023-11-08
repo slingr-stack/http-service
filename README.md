@@ -293,7 +293,7 @@ var res = svc.http.get({
     'Content-Type': 'application/json',
     'Accept': 'application/json',
     token: token
-  }
+  },
 });
 log(JSON.stringify(res)); // this will print the body of the response
 ```
@@ -311,7 +311,9 @@ var res = svc.http.get({
     'Accept': 'application/json',
     token: token
   },
-  fullResponse: true
+  settings: {
+    fullResponse: true
+  }
 });
 log(JSON.stringify(res.status));
 log(JSON.stringify(res.headers));
@@ -333,9 +335,11 @@ If you want to overwrite some of the connection values set on the service config
 ```js
 var res = svc.http.get({
   url:'https://postman-echo.com/get',
-  connectionTimeout: 1000,  // 1 sec
-  readTimeout: 30000,       // 30 sec
-  followRedirects: false    // redirects disabled
+  settings: {
+    connectionTimeout: 1000,  // 1 sec
+    readTimeout: 30000,       // 30 sec
+    followRedirects: false    // redirects disabled
+  }
 });
 ```
 
@@ -356,8 +360,10 @@ If you want to download a file in a synchronous way, you should do something lik
 ```js
 var res = svc.http.get({
   url:'.../images/client_400x400.png',
-  forceDownload: true,
-  downloadSync: true
+  settings: {
+      forceDownload: true,
+      downloadSync: true
+  }
 });
 
 log("response: "+JSON.stringify(res));
@@ -377,7 +383,9 @@ If you don't want to block execution until the download is completed, you can do
 var res = svc.http.get(
   {
     url: '.../images/client_400x400.png',
-    forceDownload: true
+    settings: {
+        forceDownload: true
+    }
   },
   {
     record: record  
@@ -508,7 +516,9 @@ You can make `OPTIONS` requests like this:
 ```js
 var res = svc.http.options({
   url: 'https://postman-echo.com/options',
-  fullResponse: true
+  settings: {
+    fullResponse: true
+  }
 });
 log(JSON.stringify(res));
 ```
@@ -526,7 +536,10 @@ You can make `HEAD` requests like this:
 ```js
 var res = svc.http.head({
   url: 'https://postman-echo.com/head',
-  fullResponse: true
+  settings: {
+    fullResponse: true
+  }
+  
 });
 log(JSON.stringify(res));
 ```
@@ -545,7 +558,6 @@ sending files. It works like this:
 ```js
 var request = {
     url: '.../customers/'+customerId+'/documents/'+documentId,
-    multipart: true,
     parts: [
         {
             name: 'file',
@@ -558,7 +570,10 @@ var request = {
             contentType: 'text/plain',
             content: 'this is a description of the document'
         }
-    ]
+    ],
+  settings: {
+    multipart: true
+  }
 };
 var res = svc.http.post(request);
 ```

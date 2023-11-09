@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>io.slingr.service</groupId>
     <artifactId>http</artifactId>
-    <version>1.0</version>
+    <version>1.0-SNAPSHOT</version>
     <name>SLINGR - Http service</name>
     <description>Default component to manage a connection Http to request external service of the Slingr platform</description>
     <packaging>jar</packaging>
@@ -63,6 +63,17 @@
             <url>https://clojars.org/repo</url>
         </repository>
     </repositories>
+    <distributionManagement>
+        <repository>
+            <id>slingrRepo.write.release</id>
+            <url>gs://repo.slingrs.io/release</url>
+        </repository>
+        <snapshotRepository>
+            <id>clojars</id>
+            <name>Clojars repository</name>
+            <url>https://clojars.org/repo</url>
+        </snapshotRepository>
+    </distributionManagement>
     <build>
         <plugins>
             <plugin>

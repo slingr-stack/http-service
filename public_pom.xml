@@ -9,7 +9,7 @@
     <packaging>jar</packaging>
     <properties>
         <!-- Slingr versions -->
-        <slingr.slingr-service.version>1.0-SNAPSHOT</slingr.slingr-service.version>
+        <slingr.slingr-service.version>1.1-SNAPSHOT</slingr.slingr-service.version>
         <!-- Build properties -->
         <jdk.version>11</jdk.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -23,7 +23,7 @@
         <!-- SLINGR Service Framework -->
         <!--suppress VulnerableLibrariesLocal -->
         <dependency>
-            <groupId>io.slingr.services</groupId>
+            <groupId>io.github.slingr-stack</groupId>
             <artifactId>slingr-services</artifactId>
             <version>${slingr.slingr-service.version}</version>
         </dependency>
@@ -56,6 +56,11 @@
                 <enabled>true</enabled>
                 <checksumPolicy>warn</checksumPolicy>
             </snapshots>
+        </repository>
+        <repository>
+            <id>clojars</id>
+            <name>Clojars repository</name>
+            <url>https://clojars.org/repo</url>
         </repository>
     </repositories>
     <build>

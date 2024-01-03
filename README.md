@@ -1,12 +1,21 @@
----
-title: HTTP Service
-keywords: 
-last_updated: April 21, 2023
-tags: []
-summary: "Detailed description of the API of the HTTP Service."
----
+<table class="table" style="margin-top: 10px">
+    <thead>
+    <tr>
+        <th>Title</th>
+        <th>Last Updated</th>
+        <th>Summary</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td>Http service</td>
+        <td>January 3, 2024</td>
+        <td>Detailed description of the API of the Http service.</td>
+    </tr>
+    </tbody>
+</table>
 
-## Overview
+# Overview
 
 The HTTP service allows making HTTP requests as well as receiving HTTP requests from
 other servers. This is the list of features:
@@ -29,11 +38,13 @@ service does not exist. This will work as long as they provide a REST HTTP API.
 
 Enable this flag if you want to use a basic system to exchange cookies with the external 
 service, where the service will send the last received cookies in subsequent requests.
+Default value: true
 
 ### Allow External URLs
 
 Disable this flag if you want to restrict the service to only allow requests with the same domain as the service. 
 This is useful to avoid external requests to other services. This will ignore the `Base URL` configuration.
+Default value: true
 
 ### Connection timeout
 
@@ -53,6 +64,7 @@ canceled. Default value: 60000 ms (60 sec). Set to zero to wait indefinitely.
 
 If it is enabled, the service will automatically redirect when it receives a 
 `3xx` HTTP status code as response to a request.
+Default value: true
 
 ### Webhook URL
 
@@ -67,7 +79,7 @@ to the app.
 The difference with the webhooks above is that in this case, the listener should return a
 JSON object that will be returned to the caller.
 
-## Quick start
+# Quick start
 
 You can make a simple `GET` request like this:
 
@@ -97,11 +109,19 @@ If the response code is not `2XX` you can catch the exception:
 
 ```js
 try {
-  svc.http.post(msg);
+  let responseError = svc.http.get({url: "https://mock.codes/403"});
 } catch (e) {
-  log('status code: '+e.additionalInfo.status);
-  log('headers: '+JSON.stringify(e.additionalInfo.headers));
-  log('body: '+JSON.stringify(e.additionalInfo.body));
+  log("Full error: " + JSON.stringify(e));
+  log("Short error description: " + JSON.stringify((e.message)));
+
+  log("Internal error: " + JSON.stringify((e.additionalInfo.error)));
+  log("Error description: " + JSON.stringify((e.additionalInfo.description)));
+
+  log("Original request: " + JSON.stringify(e.additionalInfo.request));
+  log("Timestamp: " + JSON.stringify((e.additionalInfo.details.date)));
+  log("Status code: " + JSON.stringify((e.additionalInfo.details.data.additionalInfo.status)));
+  log("Body: " + JSON.stringify((e.additionalInfo.details.data.additionalInfo.body)));
+  log("Headers: " + JSON.stringify((e.additionalInfo.details.data.additionalInfo.headers)));
 }
 ```
 
@@ -130,7 +150,6 @@ var res = svc.http.get({
 });
 log('Response: '+ JSON.stringify(res));
 ```
-
 
 ### Digest
 
@@ -181,33 +200,7 @@ Check the section [Downloading files](#downloading-files) for more information.
 If the content type is `application/json` the service will automatically convert the content
 from and to JSON.
 
-If the response is an array, it will be converted to an array:
-
-```js
-var res = svc.http.get('/repositories');
-res.forEach(function(repo) {
-  log('repo: '+repo.name);
-});
-```
-
-Same when you send data through `POST` or `PUT` requests:
-
-```js
-var res = svc.http.post({
-  url: 'https://postman-echo.com/post',
-  body: {
-    name: 'test1'
-  }
-});
-```
-
-In this case, the object is automatically converted to a JSON string.
-
-For webhook events, the same conversion will be done:
-
-```js
-log('name: '+event.data.body.name);
-```
+If the response is an array, it will be converted to an array.
 
 ### XML
 
@@ -256,7 +249,7 @@ The body sent to the external service will be converted to this XML:
 <request method="system.current"></request>
 ```
 
-## Javascript API
+# Javascript API
 
 All methods in the Javascript API allow the following options:
 - `url`: the URL you will send the request.
@@ -264,20 +257,41 @@ All methods in the Javascript API allow the following options:
   the request).
 - `headers`: an object with headers to send in the request.
   If you provide headers, these will override the ones defined in the service's configuration.
+- `àuthorization`: an object with the method of authorization as explained above.
 - `body`: this is the body of the request. If you are using JSON, you can directly send an object
   or array, and it will be automatically converted to a JSON string. If you are using an XML content
   type, this will be converted based on the rules defined [above](#xml).
-- `fullResponse`: controls what will be set in the response. If `true` the response when calling
-  an HTTP method will be an object with fields `status`, `headers` and `body`. This is important 
-  if you need to check status or headers in the response.
-- `connectionTimeout`: overwrites the [`Connection timeout`](#connection-timeout) configuration set on the service only 
-for the request. 
-- `readTimeout`: overwrites the [`Read timeout`](#read-timeout) configuration set on the service only for the 
-request.
-- `followRedirects`: overwrites the [`Follow redirects`](#follow-redirects) configuration set on the service only for 
-the request. 
+- `settings`: an object with each option to customize the request
 
 Check each method to see how to pass these options.
+
+## Settings
+
+- `connectionTimeout`: overwrites the [`Connection timeout`](#connection-timeout) configuration set on the service only
+  for the request.
+- `readTimeout`: overwrites the [`Read timeout`](#read-timeout) configuration set on the service only for the
+  request.
+- `followRedirects`: overwrites the [`Follow redirects`](#follow-redirects) configuration set on the service only for
+  the request.
+- `maxRedirects`: the maximum value of hosts that a request with code 3xx will pass through (default: 10)
+- `fullResponse`: controls what will be set in the response. If `true` the response when calling
+  an HTTP method will be an object with fields `status`, `headers` and `body`. This is important
+  if you need to check status or headers in the response.
+- `forceDownload`: to download files.
+- `downloadSync`: to download files syncronic, blocking the execution (needed the previous flag).
+- `encodeUrl`: this flag codifies the url with UTF-8 encoding. (if the url has been previously encoded should be true)
+- `forceDisableCookies`: overwrites the [`Remember cookies`](#remember-cookies) configuration set on the service only for
+  the request.
+  (take account that this flag is the opposite than the configuration)
+- `removeRefererHeaderOnRedirect`: remove the "Referer" header from the response.
+- `defaultCallback`: callback function.
+- `followAuthorizationHeader`: maintain the "Authorization" header when are 3xx codes.
+- `followOriginalHttpMethod`: maintain the "Method" of the request when are 3xx codes.
+- `useSSL`: allow configure SSL.
+- `fileName`: the name of the file that would be downloaded (needs the forceDownload flag otherwise is ignored).
+- `multipart`: allows sending multipart content.
+
+## Methods
 
 ### GET requests
 
@@ -292,7 +306,8 @@ var res = svc.http.get({
   headers: {
     'Content-Type': 'application/json',
     'Accept': 'application/json',
-    token: token
+    token: "token",
+    anotherHeader: "header"
   },
 });
 log(JSON.stringify(res)); // this will print the body of the response
@@ -309,7 +324,7 @@ var res = svc.http.get({
   headers: {
     'Content-Type': 'application/json',
     'Accept': 'application/json',
-    token: token
+    token: "token"
   },
   settings: {
     fullResponse: true
@@ -321,13 +336,6 @@ log(JSON.stringify(res.body));
 ```
 
 Keep in mind that header keys will be all lower case.
-
-You can also use a shortcut:
-
-```js
-var res = svc.http.get({url:'https://postman-echo.com/get'});
-log('Response: '+ JSON.stringify(res));
-```
 
 If you want to overwrite some of the connection values set on the service configuration for only the request, use the 
 `connectionTimeout`, `readTimeout` and `followRedirects` flags:
@@ -359,16 +367,17 @@ If you want to download a file in a synchronous way, you should do something lik
 
 ```js
 var res = svc.http.get({
-  url:'.../images/client_400x400.png',
+  url:'https://platform-docs.slingr.io/images/vendor/logo.png',
   settings: {
       forceDownload: true,
-      downloadSync: true
+      downloadSync: true,
+      fileName: "logoSlingr.png"
   }
 });
 
 log("response: "+JSON.stringify(res));
 
-// saves the file into a file field
+// saves the file into a field of type File
 record.field('document').val({
   id: res.fileId,
   name: res.fileName,
@@ -382,9 +391,10 @@ If you don't want to block execution until the download is completed, you can do
 ```js
 var res = svc.http.get(
   {
-    url: '.../images/client_400x400.png',
+    url: 'https://platform-docs.slingr.io/images/vendor/logo.png',
     settings: {
-        forceDownload: true
+        forceDownload: true,
+        fileName: "logoSlingr.png"
     }
   },
   {
@@ -425,16 +435,6 @@ var res = svc.http.post({
 log(JSON.stringify(res));
 ```
 
-You can also use a shortcut:
-
-```js
-var body = {
-  name: 'test 1',
-  type: 'a'
-};
-var res = svc.http.post({url: 'https://postman-echo.com/post',body: body});
-```
-
 ### PUT requests
 
 You can make `PUT` requests like this:
@@ -451,15 +451,6 @@ var res = svc.http.put({
   }
 });
 log(JSON.stringify(res));
-```
-
-You can also use a shortcut:
-
-```js
-var body = {
-  type: 'b'
-};
-var res = svc.http.put({url: 'https://postman-echo.com/put',body: body});
 ```
 
 ### PATCH requests
@@ -480,15 +471,6 @@ var res = svc.http.patch({
 log(JSON.stringify(res));
 ```
 
-You can also use a shortcut:
-
-```js
-var body = {
-  type: 'b'
-};
-var res = svc.http.patch({url: 'https://postman-echo.com/patch',body: body});
-```
-
 ### DELETE requests
 
 You can make `DELETE` requests like this:
@@ -501,12 +483,6 @@ var res = svc.http.delete({
   }
 });
 log(JSON.stringify(res));
-```
-
-You can also use a shortcut:
-
-```js
-var res = svc.http.delete({url: 'https://postman-echo.com/delete',body: body});
 ```
 
 ### OPTIONS requests
@@ -523,12 +499,6 @@ var res = svc.http.options({
 log(JSON.stringify(res));
 ```
 
-You can also use a shortcut:
-
-```js
-var res = svc.http.options({url: 'https://postman-echo.com/options'});
-```
-
 ### HEAD requests
 
 You can make `HEAD` requests like this:
@@ -542,12 +512,6 @@ var res = svc.http.head({
   
 });
 log(JSON.stringify(res));
-```
-
-You can also use a shortcut:
-
-```js
-var res = svc.http.head({url: 'https://postman-echo.com/head'});
 ```
 
 ### Multipart requests

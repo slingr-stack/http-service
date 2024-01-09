@@ -24,6 +24,7 @@ public class HttpTest {
 
     @Test
     public void testGetRequest() {
+        logger.info("-- INIT --");
         // build request
         final Json req = Json.map();
         req.set("body", Json.map().set("field1", "A").set("field2", "B"));
@@ -64,7 +65,7 @@ public class HttpTest {
         // it is not a full response
         assertFalse(res.is("fullResponse"));
 
-        logger.info("-- END");
+        logger.info("-- END --");
     }
 
     @Test
@@ -116,6 +117,7 @@ public class HttpTest {
 
     @Test
     public void testPutRequest() {
+        logger.info("-- INIT --");
         // build request
         final Json req = Json.map();
         req.set("body", Json.map().set("field1", "A").set("field2", "B"));
@@ -158,11 +160,12 @@ public class HttpTest {
         // it is not a full response
         assertFalse(res.is("fullResponse"));
 
-        logger.info("-- END");
+        logger.info("-- END --");
     }
 
     @Test
     public void testDeleteRequest() {
+        logger.info("-- INIT --");
         // build request
         final Json req = Json.map();
         req.set("body", Json.map().set("field1", "A").set("field2", "B"));
@@ -204,6 +207,6 @@ public class HttpTest {
         // it is not a full response
         assertFalse(res.is("fullResponse"));
 
-        logger.info("-- END");
+        logger.info("-- END --");
     }
 }

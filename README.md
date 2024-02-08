@@ -290,6 +290,7 @@ Check each method to see how to pass these options.
 - `useSSL`: allow configure SSL.
 - `fileName`: the name of the file that would be downloaded (needs the forceDownload flag otherwise is ignored).
 - `multipart`: allows sending multipart content.
+- `parts`: array with the information related to the file to send
 
 ## Methods
 
@@ -522,22 +523,22 @@ sending files. It works like this:
 ```js
 var request = {
     url: '.../customers/'+customerId+'/documents/'+documentId,
-    parts: [
+    settings: {
+      multipart: true,
+      parts: [
         {
-            name: 'file',
-            type: 'file',
-            fileId: record.field('document').id()
+          name: 'file',
+          type: 'file',
+          fileId: record.field('document').id()
         },
         {
-            name: 'description',
-            type: 'other',
-            contentType: 'text/plain',
-            content: 'this is a description of the document'
+          name: 'description',
+          type: 'other',
+          contentType: 'text/plain',
+          content: 'this is a description of the document'
         }
-    ],
-  settings: {
-    multipart: true
-  }
+      ]
+    }
 };
 var res = svc.http.post(request);
 ```

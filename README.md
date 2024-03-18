@@ -569,13 +569,17 @@ Keep in mind that header keys will be in lower case.
 The field `requestInfo` contains this information:
 
 - `method`: it is the HTTP verb, like `POST`, `GET`, etc.
-- `url`: the full URL of the request, like `https://app.slingrs.io/prod/svc/http`.
+- `url`: the full URL of the request, like `https://app.slingrs.io/prod/services/http`.
 - `encoding`: encoding of the request, like `UTF-8`.
 
 Keep in mind that the service will just respond with `200` status code with `ok` as the body, and 
 you won't be able to provide a custom response.
 
 ### Sync Webhooks
+
+- `method`: it is the HTTP verb, like `POST`, `GET`, etc.
+- `url`: the full URL of the request, like `https://app.slingrs.io/prod/services/http/sync`.
+- `encoding`: encoding of the request, like `UTF-8`.
 
 This works exactly the same as the regular webhooks with the only difference that you can return
 the response from the listener that process the webhook. For example, the listener could be like
@@ -587,6 +591,27 @@ var res = {
     date: new Date()
 };
 return res;
+```
+
+Keep in mind that the response should be a valid JSON.
+
+### Download Files from the application
+
+- `method`: `GET`.
+- `url`: the full URL of the request, like `https://app.slingrs.io/prod/services/http/download/<some-path-query>`.
+- `encoding`: encoding of the request, like `UTF-8`.
+
+This works exactly the same as the regular webhooks with the only difference that you can return
+the fileId and fileName of one file to download from the browser:
+
+```js
+  sys.context.setCurrentUserRecord(sys.data.findOne("sys.users", {email: "usuario123@test.com"}))
+  let user = sys.context.getCurrentUserRecord();
+    // the field "file" is of type File
+  return {
+      fileId: user.field("file").val().id, 
+      fileName: user.field("file").val().name
+  }
 ```
 
 Keep in mind that the response should be a valid JSON.

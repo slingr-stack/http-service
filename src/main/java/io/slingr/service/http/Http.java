@@ -138,9 +138,15 @@ public class Http extends HttpService {
                     buffer.flush();
                     byte[] fileBytes = buffer.toByteArray();
                     Json headers = downloadedFile.getHeaders();
-                    headers.set("Content-Type", "application/octet-stream");
-                    headers.set("Content-Disposition", "attachment; filename=\"" + (options.contains("fileName") ? options.string("fileName") : (fileMetadata.contains("fileName") ? fileMetadata.string("fileName") : "file")) + "\"");
-                    return new WebServiceResponse(fileBytes, ContentType.APPLICATION_OCTET_STREAM.toString());
+                    headers.set("Content-Type", fileMetadata.contains("contentType") ? fileMetadata.string("contentType") : "application/octet-stream");
+                    headers.set("Content-Length", fileMetadata.contains("length") ? fileMetadata.string("length") : null);
+                    String fileName = options.contains("fileName") ?
+                            options.string("fileName").split(" ")[0] :
+                            (fileMetadata.contains("fileName") ?
+                                    fileMetadata.string("fileName") :
+                                    "file");
+                    headers.set("Content-Disposition", "attachment; filename=\"" + fileName + "\"");
+                    return new WebServiceResponse(200, fileBytes, headers);
                 }
             }
             return new WebServiceResponse(404, Json.map(), ContentType.APPLICATION_JSON.toString());

@@ -185,7 +185,7 @@
             "name": "webhookSync",
             "label": "Sync Webhook URL",
             "type": "label",
-            "value": "config.WEBHOOK_URL+'/sync'"
+            "value": "@config.WEBHOOK_SYNC_URL"
         },
         {
             "name": "config",

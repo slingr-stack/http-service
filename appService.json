@@ -54,12 +54,7 @@
         {
             "label": "POST",
             "name": "post",
-            "description": "Sends a POST request",
-            "callbacks": [
-                {
-                    "name": "fileDownloaded"
-                }
-            ]
+            "description": "Sends a POST request"
         },
         {
             "label": "PUT",

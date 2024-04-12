@@ -38,6 +38,11 @@
             "label": "Download File from App",
             "name": "downloadFile",
             "description": "Happens when a async HTTP request hits the service URL and needs a response from the listener with the file content."
+        },
+        {
+            "label": "Callback",
+            "name": "callback",
+            "description": "It happens when the default callback is used in an HTTP service call."
         }
     ],
     "functions": [

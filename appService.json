@@ -48,38 +48,71 @@
             "callbacks": [
                 {
                     "name": "fileDownloaded"
+                },
+                {
+                    "name": "callback"
                 }
             ]
         },
         {
             "label": "POST",
             "name": "post",
-            "description": "Sends a POST request"
+            "description": "Sends a POST request",
+            "callbacks": [
+                {
+                    "name": "callback"
+                }
+            ]
         },
         {
             "label": "PUT",
             "name": "put",
-            "description": "Sends a PUT request"
+            "description": "Sends a PUT request",
+            "callbacks": [
+                {
+                    "name": "callback"
+                }
+            ]
         },
         {
             "label": "PATCH",
             "name": "patch",
-            "description": "Sends a PATCH request"
+            "description": "Sends a PATCH request",
+            "callbacks": [
+                {
+                    "name": "callback"
+                }
+            ]
         },
         {
             "label": "DELETE",
             "name": "delete",
-            "description": "Sends a DELETE request"
+            "description": "Sends a DELETE request",
+            "callbacks": [
+                {
+                    "name": "callback"
+                }
+            ]
         },
         {
             "label": "HEAD",
             "name": "head",
-            "description": "Sends a HEAD request"
+            "description": "Sends a HEAD request",
+            "callbacks": [
+                {
+                    "name": "callback"
+                }
+            ]
         },
         {
             "label": "OPTIONS",
             "name": "options",
-            "description": "Sends a OPTIONS request"
+            "description": "Sends a OPTIONS request",
+            "callbacks": [
+                {
+                    "name": "callback"
+                }
+            ]
         }
     ],
     "configuration":[

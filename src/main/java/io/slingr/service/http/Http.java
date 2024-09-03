@@ -65,6 +65,12 @@ public class Http extends HttpService {
         logger.info(String.format("Configured service [%s]: baseUrl [%s]", SERVICE_NAME,  baseUrl));
     }
 
+    @Override
+    public void serviceStopped(String cause) {
+        logger.error(String.format("Stopping service [%s] with cause [%s]", SERVICE_NAME, cause));
+        appLogs.info(String.format("Stopping service [%s]", SERVICE_NAME));
+    }
+
     /**
      * Converts the string headers representation in a Json map object
      *

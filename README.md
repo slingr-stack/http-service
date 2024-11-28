@@ -1,19 +1,3 @@
-<table class="table" style="margin-top: 10px">
-    <thead>
-    <tr>
-        <th>Title</th>
-        <th>Last Updated</th>
-        <th>Summary</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr>
-        <td>Http service</td>
-        <td>January 3, 2024</td>
-        <td>Detailed description of the API of the Http service.</td>
-    </tr>
-    </tbody>
-</table>
 
 # Overview
 
@@ -70,6 +54,8 @@ Default value: true
 
 This is the URL the service will be listening for requests, which will be sent as events
 to the app.
+The default url for this webhook is:
+https://<appName>.slingrs.io/<environment>/services/<serviceName>
 
 ### Sync Webhook URL
 
@@ -78,6 +64,10 @@ to the app.
 
 The difference with the webhooks above is that in this case, the listener should return a
 JSON object that will be returned to the caller.
+The default url for this webhook is:
+
+https://<appName>.slingrs.io/<environment>/services/<serviceName>/sync
+Note: this webhook sync is only available on dedicated type http-services.
 
 # Quick start
 

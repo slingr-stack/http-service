@@ -4,11 +4,13 @@ import io.slingr.services.HttpService;
 import io.slingr.services.configurations.Configuration;
 import io.slingr.services.exceptions.ErrorCode;
 import io.slingr.services.exceptions.ServiceException;
+import io.slingr.services.framework.HttpModule;
 import io.slingr.services.framework.annotations.*;
 import io.slingr.services.services.AppLogs;
 import io.slingr.services.services.rest.DownloadedFile;
 import io.slingr.services.services.rest.RestMethod;
 import io.slingr.services.utils.Json;
+import io.slingr.services.ws.exchange.FunctionRequest;
 import io.slingr.services.ws.exchange.WebServiceRequest;
 import io.slingr.services.ws.exchange.WebServiceResponse;
 import org.apache.commons.lang3.StringUtils;
@@ -69,6 +71,21 @@ public class Http extends HttpService {
     public void serviceStopped(String cause) {
         logger.error(String.format("Stopping service [%s] with cause [%s]", SERVICE_NAME, cause));
         appLogs.info(String.format("Stopping service [%s]", SERVICE_NAME));
+    }
+
+
+    @ServiceFunction(name = "getCustom")
+    public final Json getRequest(FunctionRequest request) {
+        Json response = this.defaultGetRequest(request);
+        events().send("callback", response, request.getFunctionId());
+        return response;
+    }
+
+    @ServiceFunction(name = "postCustom")
+    public final Json postRequest(FunctionRequest request) {
+        Json response = this.defaultPostRequest(request);
+        events().send("callback", response, request.getFunctionId());
+        return response;
     }
 
     /**

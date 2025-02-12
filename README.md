@@ -561,7 +561,6 @@ var res = svc.httpDedicated.get({
 - `event`: contains the event data sent by the service.
 - `callbackData`: contains any additional data you pass in the second parameter of the http service.
 
-callbackData 
 ## Events
 
 ### Webhooks

@@ -46,27 +46,6 @@
         }
     ],
     "functions": [{
-        "label": "GET CUSTOM",
-        "name": "getCustom",
-        "description": "Sends a GET request",
-        "callbacks": [
-            {
-                "name": "fileDownloaded"
-            },
-            {
-                "name": "callback"
-            }
-        ]
-    },{
-        "label": "POST CUSTOM",
-        "name": "postCustom",
-        "description": "Sends a POST request",
-        "callbacks": [
-            {
-                "name": "callback"
-            }
-        ]
-    },{
             "label": "GET",
             "name": "get",
             "description": "Sends a GET request",

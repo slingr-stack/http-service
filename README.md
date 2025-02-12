@@ -275,7 +275,6 @@ Check each method to see how to pass these options.
   the request.
   (take account that this flag is the opposite than the configuration)
 - `removeRefererHeaderOnRedirect`: remove the "Referer" header from the response.
-- `defaultCallback`: callback function.
 - `followAuthorizationHeader`: maintain the "Authorization" header when are 3xx codes.
 - `followOriginalHttpMethod`: maintain the "Method" of the request when are 3xx codes.
 - `useSSL`: allow configure SSL.
@@ -542,6 +541,27 @@ As you can see, you can send one or many parts in the multipart. Each part has t
 - `contentType`: this is the content type of the part. Only when `type` is `other` and it is optional.
 - `content`: this is the content of the type. Could be a JSON or a string. Required when `type` is `other`. 
 
+### Callbacks
+
+Callbacks allow you to execute specific logic once a request has been completed or when a certain event occurs. This is particularly useful for asynchronous tasks, where you want to handle the response or any additional actions after the HTTP request is made.
+
+For example, you can define a callback function to handle the response data after a `GET` request:
+
+```js
+var res = svc.httpDedicated.get({
+  url: 'https://postman-echo.com/get',
+},
+{  prop1: 'prop1'},
+{ 'callback': function (event, callbackData) {
+  sys.logs.info(JSON.stringify(event))
+}
+});
+```
+
+- `event`: contains the event data sent by the service.
+- `callbackData`: contains any additional data you pass in the second parameter of the http service.
+
+callbackData 
 ## Events
 
 ### Webhooks

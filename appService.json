@@ -45,8 +45,7 @@
             "description": "It happens when the default callback is used in an HTTP service call."
         }
     ],
-    "functions": [
-        {
+    "functions": [{
             "label": "GET",
             "name": "get",
             "description": "Sends a GET request",

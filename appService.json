@@ -12,7 +12,7 @@
                 "description": "Default configuration"
             }
         ],
-        "allowMultipleInstances": false
+        "allowMultipleInstances": true
     },
     "icon48": "https://storage.googleapis.com/static.slingrs.io/platform/endpoints/http.png",
     "configurationHelpUrl": "/services-http.html#configuration",
@@ -45,7 +45,8 @@
             "description": "It happens when the default callback is used in an HTTP service call."
         }
     ],
-    "functions": [{
+    "functions": [
+        {
             "label": "GET",
             "name": "get",
             "description": "Sends a GET request",

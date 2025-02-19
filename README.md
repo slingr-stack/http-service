@@ -103,16 +103,13 @@ try {
   let responseError = svc.http.get({url: "https://mock.codes/403"});
 } catch (e) {
   log("Full error: " + JSON.stringify(e));
-  log("Short error description: " + JSON.stringify((e.message)));
-
-  log("Internal error: " + JSON.stringify((e.additionalInfo.error)));
-  log("Error description: " + JSON.stringify((e.additionalInfo.description)));
-
-  log("Original request: " + JSON.stringify(e.additionalInfo.request));
-  log("Timestamp: " + JSON.stringify((e.additionalInfo.details.date)));
-  log("Status code: " + JSON.stringify((e.additionalInfo.details.data.additionalInfo.status)));
-  log("Body: " + JSON.stringify((e.additionalInfo.details.data.additionalInfo.body)));
-  log("Headers: " + JSON.stringify((e.additionalInfo.details.data.additionalInfo.headers)));
+  log("Short error description: " + JSON.stringify(e.message));
+  log("Internal error: " + JSON.stringify(e.error));
+  log("Error description: " + JSON.stringify(e.additionalInfo.body.description));
+  log("Timestamp: " + JSON.stringify(e.additionalInfo.headers.date));
+  log("Status code: " + JSON.stringify(e.additionalInfo.status));
+  log("Body: " + JSON.stringify(e.additionalInfo.body));
+  log("Headers: " + JSON.stringify(e.additionalInfo.headers));
 }
 ```
 

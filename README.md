@@ -365,8 +365,9 @@ var res = svc.http.get({
 
 log("response: "+JSON.stringify(res));
 
+let record = sys.data.createRecord('archivos');
 // saves the file into a field of type File
-record.field('document').val({
+record.field('file').val({
   id: res.fileId,
   name: res.fileName,
   contentType: res.contentType
@@ -545,7 +546,7 @@ Callbacks allow you to execute specific logic once a request has been completed 
 For example, you can define a callback function to handle the response data after a `GET` request:
 
 ```js
-var res = svc.httpDedicated.get({
+var res = svc.http.get({
   url: 'https://postman-echo.com/get',
 },
 {  prop1: 'prop1'},

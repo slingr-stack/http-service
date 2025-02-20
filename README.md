@@ -509,27 +509,48 @@ It is possible to send multipart request when using `POST` or `PUT`. This is spe
 sending files. It works like this:
 
 ```js
-var request = {
-    url: '.../customers/'+customerId+'/documents/'+documentId,
+let file = sys.data.createRecord('archivos');
+file.field('file').val({
+  name: 'test1.txt',
+  contentType: 'text/plain',
+  content: 'dGVzdCBmaWxlIQ=='
+});
+sys.data.save(file);
+
+try {
+  log(JSON.stringify(svc.http.post({
+    url: `${APP_URL}/api/files`,
+    headers: {
+      type: 'oauth2',
+      token: 'BTCHnFcngk4XQ2xefyBpyW2b47IoCMkB',
+      headerPrefix: 'token'
+    },
     settings: {
       multipart: true,
       parts: [
         {
           name: 'file',
           type: 'file',
-          fileId: record.field('document').id()
+          fileId: file.field('file').id()
         },
         {
-          name: 'description',
-          type: 'other',
-          contentType: 'text/plain',
+          name: 'description.txt',
+          contentType: 'text/plain',  // optional
           content: 'this is a description of the document'
         }
       ]
     }
-};
-var res = svc.http.post(request);
-```
+  })));
+} catch (e) {
+  log("Full error: " + JSON.stringify(e));
+  log("Short error description: " + JSON.stringify(e.message));
+  log("Internal error: " + JSON.stringify(e.error));
+  log("Error description: " + JSON.stringify(e.additionalInfo.body.description));
+  log("Timestamp: " + JSON.stringify(e.additionalInfo.headers.date));
+  log("Status code: " + JSON.stringify(e.additionalInfo.status));
+  log("Body: " + JSON.stringify(e.additionalInfo.body));
+  log("Headers: " + JSON.stringify(e.additionalInfo.headers));
+}```
 
 As you can see, you can send one or many parts in the multipart. Each part has the following fields:
 

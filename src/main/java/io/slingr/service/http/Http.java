@@ -134,7 +134,7 @@ public class Http extends HttpService {
                 if (options.contains("fileId") && options.string("fileId") != null) {
                     Json fileMetadata = files().metadata(options.string("fileId"));
                     DownloadedFile downloadedFile = files().download(options.string("fileId"));
-                    InputStream file = downloadedFile.getFile();
+                    InputStream file = downloadedFile.file();
                     ByteArrayOutputStream buffer = new ByteArrayOutputStream();
                     int nRead;
                     byte[] data = new byte[1024];
@@ -143,7 +143,7 @@ public class Http extends HttpService {
                     }
                     buffer.flush();
                     byte[] fileBytes = buffer.toByteArray();
-                    Json headers = downloadedFile.getHeaders();
+                    Json headers = downloadedFile.headers();
                     headers.set("Content-Type", fileMetadata.contains("contentType") ? fileMetadata.string("contentType") : "application/octet-stream");
                     headers.set("Content-Length", fileMetadata.contains("length") ? fileMetadata.string("length") : null);
                     String fileName = options.contains("fileName") ?

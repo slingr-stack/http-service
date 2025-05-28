@@ -13,7 +13,7 @@
     <packaging>jar</packaging>
     <properties>
         <!-- Slingr versions -->
-        <slingr.slingr-service.version>1.6.6</slingr.slingr-service.version>
+        <slingr.slingr-service.version>1.6.7</slingr.slingr-service.version>
         <!-- Dependency versions -->
         <jakarta.servlet.version>6.0.0</jakarta.servlet.version>
         <!-- Build properties -->

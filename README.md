@@ -278,6 +278,7 @@ Check each method to see how to pass these options.
 - `fileName`: the name of the file that would be downloaded (needs the forceDownload flag otherwise is ignored).
 - `multipart`: allows sending multipart content.
 - `parts`: array with the information related to the file to send
+- `bodyAsFile`: if set to `true`, the value in the `body` field will be interpreted as a `fileId` and the content of that file will be used directly as the raw body of the request. This is useful for APIs that expect binary file content in the body instead of multipart form data.
 
 ## Methods
 
@@ -553,13 +554,35 @@ try {
 }
 ```
 
+### Raw file as body (bodyAsFile)
+You can send a file as the raw body of a POST, PUT or similar request by using the `bodyAsFile` flag. This is especially useful when integrating with APIs that expect binary content directly in the body, without multipart encoding.
 As you can see, you can send one or many parts in the multipart. Each part has the following fields:
 
-- `name`: the name of the field in the multipart.
-- `type`: can be `file` if it is a file or `other` if it is any other content.
-- `fileId`: this is the ID of the file in the app. Required if `type` is `file`.
-- `contentType`: this is the content type of the part. Only when `type` is `other` and it is optional.
-- `content`: this is the content of the type. Could be a JSON or a string. Required when `type` is `other`. 
+```js
+  let file = sys.data.createRecord('archivos');
+  file.field('file').val({
+    name: 'document.txt',
+    contentType: 'text/plain',
+    content: 'VGhpcyBpcyBhIHNhbXBsZSBkb2N1bWVudC4='  // base64 for "This is a sample document."
+  });
+  sys.data.save(file);
+  
+  try {
+    log(JSON.stringify(svc.http.post({
+      url: 'https://api.example.com/upload',
+      headers: {
+        'Content-Type': 'text/plain',
+        'Authorization': 'Bearer your-token'
+      },
+      body: file.field('file').id(),
+      settings: {
+        bodyAsFile: true
+      }
+    })));
+  } catch (e) {
+      log("Full error: " + JSON.stringify(e));
+  }
+```
 
 ### Callbacks
 

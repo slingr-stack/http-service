@@ -554,9 +554,8 @@ try {
 }
 ```
 
-### Raw file as body (bodyAsFile)
-You can send a file as the raw body of a POST, PUT or similar request by using the `bodyAsFile` flag. This is especially useful when integrating with APIs that expect binary content directly in the body, without multipart encoding.
-As you can see, you can send one or many parts in the multipart. Each part has the following fields:
+### Raw file as body request
+You can send a file as the raw body of a `POST`, `PUT` or similar request by using the `bodyAsFile` flag. This is especially useful when integrating with APIs that expect binary content directly in the body, without multipart encoding.
 
 ```js
   let file = sys.data.createRecord('archivos');

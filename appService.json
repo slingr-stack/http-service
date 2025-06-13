@@ -10,6 +10,24 @@
                 "label": "Default",
                 "memory": 256,
                 "description": "Default configuration"
+            },
+            {
+                "name": "medium",
+                "label": "Medium",
+                "memory": 512,
+                "description": "Medium memory configuration (512 MB)"
+            },
+            {
+                "name": "big",
+                "label": "Big",
+                "memory": 768,
+                "description": "Big memory configuration (768 MB)"
+            },
+            {
+                "name": "extra",
+                "label": "Extra",
+                "memory": 1024,
+                "description": "Extra memory configuration (1024 MB)"
             }
         ],
         "allowMultipleInstances": true

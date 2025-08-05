@@ -93,6 +93,28 @@ public class Http extends HttpService {
         }
         return headers;
     }
+
+    @ServiceWebService(path = "/sync")
+    public WebServiceResponse syncWebhook(WebServiceRequest request) {
+      return syncWebhookCustom(request);
+    }
+
+    @ServiceWebService(path = "/sync/{externalService}")
+    public WebServiceResponse syncWebhookCustom(WebServiceRequest request) {
+        logger.info(String.format("Webhook sync received for service [%s]", SERVICE_NAME));
+        try {
+            Json webhookConverted = defaultWebhookConverter(request);
+            webhookConverted.set("path", request.getPath().replace("/sync", ""));
+            Json options = (Json) events().sendSync("webhookSync", webhookConverted);
+            return new WebServiceResponse(options, ContentType.APPLICATION_JSON.toString());
+        } catch (ClassCastException cce) {
+            appLogs.error("The response to the sync webhook from the listener is not a valid JSON");
+        } catch (Exception e) {
+            appLogs.error("There was an error processing sync webhook: " + e.getMessage(), e);
+        }
+        return new WebServiceResponse(500, Json.map(), ContentType.APPLICATION_JSON.toString());
+    }
+
     @ServiceWebService(path = "/{externalService}")
     public WebServiceResponse asyncWebhook(WebServiceRequest request) {
         logger.info(String.format("Webhook received for service [%s]", SERVICE_NAME));
@@ -107,21 +129,7 @@ public class Http extends HttpService {
         return new WebServiceResponse(Json.map(), ContentType.APPLICATION_JSON.toString());
     }
 
-    @ServiceWebService(path = "/sync/{externalService}")
-    public WebServiceResponse syncWebhook(WebServiceRequest request) {
-        logger.info(String.format("Webhook sync received for service [%s]", SERVICE_NAME));
-        try {
-            Json webhookConverted = defaultWebhookConverter(request);
-            webhookConverted.set("path", request.getPath().replace("/sync", ""));
-            Json options = (Json) events().sendSync("webhookSync", webhookConverted);
-            return new WebServiceResponse(options, ContentType.APPLICATION_JSON.toString());
-        } catch (ClassCastException cce) {
-            appLogs.error("The response to the sync webhook from the listener is not a valid JSON");
-        } catch (Exception e) {
-            appLogs.error("There was an error processing sync webhook: " + e.getMessage(), e);
-        }
-        return new WebServiceResponse(500, Json.map(), ContentType.APPLICATION_JSON.toString());
-    }
+
 
     @ServiceWebService(path = "/download/{fileId}", methods = {RestMethod.GET})
     public WebServiceResponse downloadFile(WebServiceRequest request) {

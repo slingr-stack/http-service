@@ -43,6 +43,11 @@
             "description": "Happens when a HTTP request hits the service URL. Must be a POST with content type application/json."
         },
         {
+            "label": "Custom Webhook Sync",
+            "name": "syncWebhookCustom",
+            "description": "Happens when a async HTTP request hits the service URL and needs a response from the listener. Must be a POST with content type application/json."
+        },
+        {
             "label": "Webhook Sync",
             "name": "webhookSync",
             "description": "Happens when a async HTTP request hits the service URL and needs a response from the listener. Must be a POST with content type application/json."

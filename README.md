@@ -590,14 +590,20 @@ Callbacks allow you to execute specific logic once a request has been completed 
 For example, you can define a callback function to handle the response data after a `GET` request:
 
 ```js
-var res = svc.http.get({
-  url: 'https://postman-echo.com/get',
-},
-{  prop1: 'prop1'},
-{ 'callback': function (event, callbackData) {
-  sys.logs.info(JSON.stringify(event))
-}
-});
+let res = svc.http.get(
+    {
+        url: 'https://postman-echo.com/get'
+    },
+    {
+        test: "TestingData"
+    },
+    {
+        callback: function (event, callbackData) {
+            sys.logs.warn(JSON.stringify(event)); // response from postman-echo get
+            sys.logs.warn(JSON.stringify(callbackData)); // {test: "TestingData"} as string
+        }
+    });
+log(JSON.stringify(res)) // {status: "ok"} as string
 ```
 
 - `event`: contains the event data sent by the service.

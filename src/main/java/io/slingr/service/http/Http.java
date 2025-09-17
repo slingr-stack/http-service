@@ -17,15 +17,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 
 import static io.slingr.services.services.HttpService.defaultWebhookConverter;
 
 @SlingrService(name = "http")
 public class Http extends HttpService {
+    private static final Logger logger = LoggerFactory.getLogger(Http.class);
 
     private static final String SERVICE_NAME = "http";
-    private static final Logger logger = LoggerFactory.getLogger(Http.class);
 
     @ApplicationLogger
     private AppLogs appLogs;
@@ -43,7 +44,7 @@ public class Http extends HttpService {
 
     @Override
     public void serviceStarted() {
-        logger.info(String.format("Initializing service [%s]", SERVICE_NAME));
+        logger.info("Initializing service [{}]", SERVICE_NAME);
         appLogs.info(String.format("Initializing service [%s]", SERVICE_NAME));
         final String headers = configuration.string("defaultHeaders", "");
         try {
@@ -62,12 +63,12 @@ public class Http extends HttpService {
         httpService().setFollowRedirects(Configuration.parseBooleanValue(configuration.string("followRedirects"), true));
         httpService().setConnectionTimeout(configuration.integer("connectionTimeout", 5000));
         httpService().setReadTimeout(configuration.integer("readTimeout", 60000));
-        logger.info(String.format("Configured service [%s]: baseUrl [%s]", SERVICE_NAME,  baseUrl));
+        logger.info("Configured service [{}]: baseUrl [{}]", SERVICE_NAME, baseUrl);
     }
 
     @Override
     public void serviceStopped(String cause) {
-        logger.error(String.format("Stopping service [%s] with cause [%s]", SERVICE_NAME, cause));
+        logger.error("Stopping service [{}] with cause [{}]", SERVICE_NAME, cause);
         appLogs.info(String.format("Stopping service [%s]", SERVICE_NAME));
     }
 
@@ -101,7 +102,7 @@ public class Http extends HttpService {
 
     @ServiceWebService(path = "/sync/{externalService}")
     public WebServiceResponse syncWebhookCustom(WebServiceRequest request) {
-        logger.info(String.format("Webhook sync received for service [%s]", SERVICE_NAME));
+        logger.info("Webhook sync received for service [{}]", SERVICE_NAME);
         try {
             Json webhookConverted = defaultWebhookConverter(request);
             webhookConverted.set("path", request.getPath().replace("/sync", ""));
@@ -117,7 +118,7 @@ public class Http extends HttpService {
 
     @ServiceWebService(path = "/{externalService}")
     public WebServiceResponse asyncWebhook(WebServiceRequest request) {
-        logger.info(String.format("Webhook received for service [%s]", SERVICE_NAME));
+        logger.info("Webhook received for service [{}]", SERVICE_NAME);
         try {
             events().send("webhook",  defaultWebhookConverter(request));
             return new WebServiceResponse("Ok");
@@ -129,11 +130,9 @@ public class Http extends HttpService {
         return new WebServiceResponse(Json.map(), ContentType.APPLICATION_JSON.toString());
     }
 
-
-
     @ServiceWebService(path = "/download/{fileId}", methods = {RestMethod.GET})
     public WebServiceResponse downloadFile(WebServiceRequest request) {
-        logger.info(String.format("Webhook sync for download file received, for service [%s]", SERVICE_NAME));
+        logger.info("Webhook sync for download file received, for service [{}]", SERVICE_NAME);
         try {
             Json webhookConverted = defaultWebhookConverter(request);
             webhookConverted.set("path", request.getPath().replace("/download", ""));
@@ -142,15 +141,7 @@ public class Http extends HttpService {
                 if (options.contains("fileId") && options.string("fileId") != null) {
                     Json fileMetadata = files().metadata(options.string("fileId"));
                     DownloadedFile downloadedFile = files().download(options.string("fileId"));
-                    InputStream file = downloadedFile.file();
-                    ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-                    int nRead;
-                    byte[] data = new byte[1024];
-                    while ((nRead = file.read(data, 0, data.length)) != -1) {
-                        buffer.write(data, 0, nRead);
-                    }
-                    buffer.flush();
-                    byte[] fileBytes = buffer.toByteArray();
+                    final byte[] fileBytes = Http.getFileBytes(downloadedFile);
                     Json headers = downloadedFile.headers();
                     headers.set("Content-Type", fileMetadata.contains("contentType") ? fileMetadata.string("contentType") : "application/octet-stream");
                     headers.set("Content-Length", fileMetadata.contains("length") ? fileMetadata.string("length") : null);
@@ -170,5 +161,19 @@ public class Http extends HttpService {
             appLogs.error("There was an error processing sync webhook: " + e.getMessage(), e);
         }
         return new WebServiceResponse(500, Json.map(), ContentType.APPLICATION_JSON.toString());
+    }
+
+    private static byte[] getFileBytes(DownloadedFile downloadedFile) throws IOException {
+        ByteArrayOutputStream buffer;
+        try (InputStream file = downloadedFile.file()) {
+            buffer = new ByteArrayOutputStream();
+            int nRead;
+            byte[] data = new byte[1024];
+            while ((nRead = file.read(data, 0, data.length)) != -1) {
+                buffer.write(data, 0, nRead);
+            }
+        }
+        buffer.flush();
+        return buffer.toByteArray();
     }
 }
